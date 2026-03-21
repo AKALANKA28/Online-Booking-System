@@ -167,8 +167,17 @@
       <workItem from="1773764910618" duration="935000" />
       <workItem from="1773766587295" duration="3126000" />
       <workItem from="1773847635167" duration="2467000" />
-      <workItem from="1774103430049" duration="408000" />
+      <workItem from="1774103430049" duration="941000" />
     </task>
+    <task id="LOCAL-00001" summary="update folder structure and add frontend">
+      <option name="closed" value="true" />
+      <created>1774103917164</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1774103917164</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
