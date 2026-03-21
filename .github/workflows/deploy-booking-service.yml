@@ -1,0 +1,46 @@
+# name: Deploy Booking Service
+
+# run-name: "${{ github.actor }} deploying Booking Service from ${{ github.ref_name }}"
+
+# on:
+#   push:
+#     branches: [ master, dev ]
+#     paths:
+#       - 'backend/booking-service/**'
+#       - 'backend/pom.xml'
+#       - '.github/workflows/deploy-booking-service.yml'
+
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+
+#       - name: Show deployment context
+#         run: |
+#           echo "Starting deployment for Booking Service"
+#           echo "Branch: ${{ github.ref_name }}"
+#           echo "Repository: ${{ github.repository }}"
+#           echo "Triggered by: ${{ github.event_name }}"
+
+#       - name: Log in to Azure
+#         uses: azure/login@v2
+#         with:
+#           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+#       - name: Build and deploy Booking Service
+#         uses: azure/container-apps-deploy-action@v1
+#         with:
+#           appSourcePath: ${{ github.workspace }}/backend
+#           dockerfilePath: booking-service/Dockerfile
+#           acrName: ${{ secrets.ACR_NAME }}
+#           containerAppName: booking-service
+#           resourceGroup: ${{ secrets.AZURE_RESOURCE_GROUP }}
+#           containerAppEnvironment: ${{ secrets.AZURE_CONTAINERAPPS_ENV }}
+#           imageToBuild: ${{ secrets.ACR_NAME }}.azurecr.io/booking-service:${{ github.sha }}
+#           disableTelemetry: true
+
+#       - name: Deployment complete
+#         run: echo "Booking Service deployed successfully."
