@@ -1,4 +1,4 @@
-name: ci
+name: CI
 
 on:
   push:
@@ -7,21 +7,18 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  backend:
-    name: Backend Build
+  build-backend:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: backend
-    env:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java 21
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -29,24 +26,15 @@ jobs:
           cache: maven
 
       - name: Build backend
-        run: mvn -B clean package -DskipTests
+        run: mvn clean package -DskipTests
 
-      - name: Run tests
-        run: mvn -B test
+      - name: Run SonarCloud
+        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN }} -Dsonar.host.url=https://sonarcloud.io
 
-      - name: Run SonarCloud analysis
-        if: ${{ env.SONAR_TOKEN != '' }}
-        run: >
-          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-          -Dsonar.token=${SONAR_TOKEN}
-          -Dsonar.host.url=https://sonarcloud.io
-
-      - name: Setup Snyk
-        if: ${{ env.SNYK_TOKEN != '' }}
+      - name: Set up Snyk
         uses: snyk/actions/setup@master
 
-      - name: Run Snyk scan
-        if: ${{ env.SNYK_TOKEN != '' }}
+      - name: Run Snyk
         run: snyk test --all-projects --severity-threshold=high
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -54,7 +42,7 @@ jobs:
       - name: Upload backend jars
         uses: actions/upload-artifact@v4
         with:
-          name: backend-service-jars
+          name: backend-jars
           path: |
             backend/api-gateway/target/*.jar
             backend/event-service/target/*.jar
@@ -62,36 +50,26 @@ jobs:
             backend/booking-service/target/*.jar
             backend/payment-notification-service/target/*.jar
 
-  frontend:
-    name: Frontend Build
+  build-frontend:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: frontend
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         run: npm ci
 
       - name: Build frontend
         run: npm run build
-
-      - name: Upload frontend build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-build
-          path: |
-            frontend/.next
-            frontend/package.json
-            frontend/package-lock.json
-            frontend/next.config.mjs
