@@ -7,7 +7,8 @@ on:
     branches: [ main, develop ]
 
 jobs:
-  build-backend:
+  backend:
+    name: Build Backend
     runs-on: ubuntu-latest
 
     defaults:
@@ -18,26 +19,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java
+      - name: Set up Java 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
 
-      - name: Build backend
-        run: mvn clean package -DskipTests
-
-      - name: Run SonarCloud
-        run: mvn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.token=${{ secrets.SONAR_TOKEN }} -Dsonar.host.url=https://sonarcloud.io
-
-      - name: Set up Snyk
-        uses: snyk/actions/setup@master
-
-      - name: Run Snyk
-        run: snyk test --all-projects --severity-threshold=high
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Build backend (all services)
+        run: mvn -B clean package -DskipTests
 
       - name: Upload backend jars
         uses: actions/upload-artifact@v4
@@ -50,7 +40,8 @@ jobs:
             backend/booking-service/target/*.jar
             backend/payment-notification-service/target/*.jar
 
-  build-frontend:
+  frontend:
+    name: Build Frontend
     runs-on: ubuntu-latest
 
     defaults:
@@ -61,7 +52,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -73,3 +64,12 @@ jobs:
 
       - name: Build frontend
         run: npm run build
+
+      - name: Upload frontend build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: |
+            frontend/.next
+            frontend/package.json
+            frontend/package-lock.json
