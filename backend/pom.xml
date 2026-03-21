@@ -32,6 +32,9 @@
         <jjwt.version>0.12.6</jjwt.version>
         <lombok.version>1.18.34</lombok.version>
         <maven.compiler.release>21</maven.compiler.release>
+        <sonar.organization>akalanka28</sonar.organization>
+        <sonar.projectKey>smart-ticketing-platform</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencyManagement>
