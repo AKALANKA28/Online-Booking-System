@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-paper text-ink font-sans antialiased;
+  background-image:
+    radial-gradient(circle at top left, rgba(36, 89, 255, 0.10), transparent 30%),
+    radial-gradient(circle at top right, rgba(117, 70, 241, 0.10), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,0.65), rgba(255,255,255,0.85));
+}
+
+::selection {
+  background: rgba(36, 89, 255, 0.18);
+}
+
+.shell {
+  @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+}
+
+.surface {
+  @apply rounded-card border border-line/80 bg-white/75 shadow-soft backdrop-blur;
+}
+
+.surface-dark {
+  @apply rounded-card border border-white/10 text-white shadow-panel;
+}
+
+.eyebrow {
+  @apply text-xs font-semibold uppercase tracking-[0.18em] text-smoke;
+}
+
+.metric-card {
+  @apply rounded-3xl border border-line/70 bg-cloud px-4 py-4;
+}
+
+.ticket-chip {
+  @apply inline-flex items-center gap-2 rounded-full border border-line/80 bg-white/90 px-3 py-1 text-xs font-semibold text-ink;
+}
+
+.seat-grid {
+  background-image:
+    radial-gradient(circle at top, rgba(36, 89, 255, 0.10), transparent 35%),
+    linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.92));
+}
+
+.ticket-divider {
+  position: relative;
+}
+
+.ticket-divider::before,
+.ticket-divider::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - 14px);
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #f6f1e9;
+  border: 1px solid rgba(216, 208, 196, 0.9);
+}
+
+.ticket-divider::before {
+  left: -14px;
+}
+
+.ticket-divider::after {
+  right: -14px;
+}
+
+@media (max-width: 767px) {
+  .ticket-divider::before,
+  .ticket-divider::after {
+    display: none;
+  }
+}

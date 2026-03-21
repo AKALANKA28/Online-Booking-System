@@ -1,0 +1,44 @@
+server:
+  port: ${SERVER_PORT:8083}
+
+spring:
+  application:
+    name: booking-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5435/bookingdb}
+    username: ${SPRING_DATASOURCE_USERNAME:ticketing}
+    password: ${SPRING_DATASOURCE_PASSWORD:ticketing}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+
+services:
+  seat:
+    base-url: ${SERVICES_SEAT_BASE_URL:http://localhost:8082}
+  payment:
+    base-url: ${SERVICES_PAYMENT_BASE_URL:http://localhost:8084}
+
+app:
+  rabbitmq:
+    exchange: ticketing.events
+  security:
+    internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
