@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { LoginForm } from "@/components/login-form";
 
 export default function LoginPage() {
@@ -8,7 +9,9 @@ export default function LoginPage() {
         <h1 className="mt-2 font-display text-5xl font-bold text-ink">Sign in with the Spring gateway’s demo users.</h1>
         <p className="mt-4 text-base leading-8 text-smoke">This page is intentionally simple and trustworthy so it supports the polished experience instead of feeling like a hacked-on admin screen.</p>
       </div>
-      <LoginForm />
+      <Suspense fallback={<div className="py-10 text-center text-sm text-smoke">Loading login form…</div>}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }
