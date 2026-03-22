@@ -1,9 +1,19 @@
 "use client";
 
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { LoginResponse, SessionUser } from "@/lib/types";
 
-const SESSION_KEY = "pulse-tickets-session";
+// Use NEXT_PUBLIC_ env vars for client-side Next.js code.
+// If not set, fallback to a static literal key.
+const SESSION_KEY =
+  process.env.NEXT_PUBLIC_SESSION_KEY || "smart-ticketing-session";
 
 interface AuthContextValue {
   user: SessionUser | null;
@@ -46,19 +56,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const value = useMemo<AuthContextValue>(() => ({
-    user,
-    hydrated,
-    signIn: (payload) => {
-      const nextUser = toSessionUser(payload);
-      setUser(nextUser);
-      window.localStorage.setItem(SESSION_KEY, JSON.stringify(nextUser));
-    },
-    signOut: () => {
-      setUser(null);
-      window.localStorage.removeItem(SESSION_KEY);
-    },
-  }), [hydrated, user]);
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user,
+      hydrated,
+      signIn: (payload) => {
+        const nextUser = toSessionUser(payload);
+        setUser(nextUser);
+        window.localStorage.setItem(SESSION_KEY, JSON.stringify(nextUser));
+      },
+      signOut: () => {
+        setUser(null);
+        window.localStorage.removeItem(SESSION_KEY);
+      },
+    }),
+    [hydrated, user],
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
