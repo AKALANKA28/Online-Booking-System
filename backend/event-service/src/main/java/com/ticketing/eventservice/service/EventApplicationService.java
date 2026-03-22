@@ -60,7 +60,8 @@ public class EventApplicationService {
 
     @Transactional
     public Event updateStatus(Long eventId, EventStatus status) {
-        Event event = findById(eventId);
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event not found: " + eventId));
         event.setStatus(status);
         return eventRepository.save(event);
     }
