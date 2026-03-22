@@ -4,7 +4,7 @@
 
 # on:
 #   push:
-#     branches: [ master, dev ]
+#     branches: [master]
 #     paths:
 #       - 'backend/payment-notification-service/**'
 #       - 'backend/pom.xml'

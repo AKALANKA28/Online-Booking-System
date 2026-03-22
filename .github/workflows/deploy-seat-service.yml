@@ -4,7 +4,7 @@
 
 # on:
 #   push:
-#     branches: [ master, dev ]
+#     branches: [master]
 #     paths:
 #       - 'backend/seat-service/**'
 #       - 'backend/pom.xml'

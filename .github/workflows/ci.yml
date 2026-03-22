@@ -4,9 +4,9 @@ run-name: "${{ github.actor }} triggered CI for ${{ github.ref_name }}"
 
 on:
   push:
-    branches: [master, dev]
+    branches: [master]
   pull_request:
-    branches: [master, dev]
+    branches: [master]
 
 jobs:
   backend:
