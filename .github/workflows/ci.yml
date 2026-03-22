@@ -20,6 +20,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure full history for Sonar SCM blame
+        run: git fetch --unshallow || echo "Already full clone"
 
       - name: Show workflow context
         run: |
@@ -102,6 +107,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure full history for Sonar SCM blame
+        run: git fetch --unshallow || echo "Already full clone"
 
       - name: Show workflow context
         run: |
