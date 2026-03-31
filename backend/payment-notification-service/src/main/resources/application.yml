@@ -5,9 +5,9 @@ spring:
   application:
     name: payment-notification-service
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5436/paymentdb}
-    username: ${SPRING_DATASOURCE_USERNAME:ticketing}
-    password: ${SPRING_DATASOURCE_PASSWORD:ticketing}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://ep-morning-meadow-a8vv6di9-pooler.eastus2.azure.neon.tech/paymentdb?&sslmode=require&channelBinding=require}
+    username: ${SPRING_DATASOURCE_USERNAME:neondb_owner}
+    password: ${SPRING_DATASOURCE_PASSWORD:npg_cd8jbG0HYQnq}
   jpa:
     hibernate:
       ddl-auto: update
@@ -16,10 +16,12 @@ spring:
       hibernate:
         format_sql: true
   rabbitmq:
-    host: ${SPRING_RABBITMQ_HOST:localhost}
-    port: ${SPRING_RABBITMQ_PORT:5672}
-    username: ${SPRING_RABBITMQ_USERNAME:guest}
-    password: ${SPRING_RABBITMQ_PASSWORD:guest}
+    addresses: ${SPRING_RABBITMQ_ADDRESSES:amqps://jpwpeqpo:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju@yak.lmq.cloudamqp.com/jpwpeqpo}
+    username: ${SPRING_RABBITMQ_USERNAME:jpwpeqpo}
+    password: ${SPRING_RABBITMQ_PASSWORD:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju}
+    virtual-host: ${SPRING_RABBITMQ_VHOST:jpwpeqpo}
+    ssl:
+      enabled: ${SPRING_RABBITMQ_SSL_ENABLED:false}
 
 app:
   rabbitmq:
