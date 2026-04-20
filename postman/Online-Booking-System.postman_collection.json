@@ -1,0 +1,543 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Online Booking System — Ticketing Platform",
+    "description": "Microservices API collection.\n\n**Recommended:** Use folder **1 - API Gateway** (port 8080). **Login** requests save tokens and **adminPhone** / **customerPhone** / **user2Phone** from the JSON `phone` field (defaults match `DemoUserService`). Bookings through the gateway **must not** send `userPhone` in the body — the gateway adds **X-User-Phone** from the JWT.\n\n**Direct booking** (folder 4) uses collection variables **{{customerPhone}}** etc. Internal routes: **X-Internal-Token** = `internal-demo-secret`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "gatewayBaseUrl", "value": "http://localhost:8080" },
+    { "key": "eventServiceUrl", "value": "http://localhost:8081" },
+    { "key": "seatServiceUrl", "value": "http://localhost:8082" },
+    { "key": "bookingServiceUrl", "value": "http://localhost:8083" },
+    { "key": "paymentServiceUrl", "value": "http://localhost:8084" },
+    { "key": "internalApiKey", "value": "internal-demo-secret" },
+    { "key": "adminToken", "value": "" },
+    { "key": "customerToken", "value": "" },
+    { "key": "user2Token", "value": "" },
+    { "key": "adminPhone", "value": "+15555550101" },
+    { "key": "customerPhone", "value": "+15555550102" },
+    { "key": "user2Phone", "value": "+15555550103" },
+    { "key": "eventId", "value": "1" },
+    { "key": "bookingReference", "value": "" },
+    { "key": "paymentReference", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "1 - API Gateway",
+      "item": [
+        {
+          "name": "Auth",
+          "item": [
+            {
+              "name": "Login (Admin)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var j = pm.response.json();",
+                      "    if (j.accessToken) pm.collectionVariables.set('adminToken', j.accessToken);",
+                      "    if (j.phone) pm.collectionVariables.set('adminPhone', j.phone);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+                },
+                "url": "{{gatewayBaseUrl}}/auth/login",
+                "description": "Saves **adminToken** and **adminPhone** (from JSON `phone`, E.164) to collection variables. Gateway puts `phone` on JWT as **X-User-Phone** for downstream calls."
+              }
+            },
+            {
+              "name": "Login (Customer)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var j = pm.response.json();",
+                      "    if (j.accessToken) pm.collectionVariables.set('customerToken', j.accessToken);",
+                      "    if (j.phone) pm.collectionVariables.set('customerPhone', j.phone);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"customer\",\n  \"password\": \"customer123\"\n}"
+                },
+                "url": "{{gatewayBaseUrl}}/auth/login",
+                "description": "Saves **customerToken** and **customerPhone** (from JSON `phone`) to collection variables."
+              }
+            },
+            {
+              "name": "List demo users",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{gatewayBaseUrl}}/auth/users",
+                "description": "Public — no JWT. Each user includes **phone** (E.164): admin +15555550101, customer +15555550102, user2 +15555550103."
+              }
+            },
+            {
+              "name": "Login (User2)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if (pm.response.code === 200) {",
+                      "    var j = pm.response.json();",
+                      "    if (j.accessToken) pm.collectionVariables.set('user2Token', j.accessToken);",
+                      "    if (j.phone) pm.collectionVariables.set('user2Phone', j.phone);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [{ "key": "Content-Type", "value": "application/json" }],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"user2\",\n  \"password\": \"user2123\"\n}"
+                },
+                "url": "{{gatewayBaseUrl}}/auth/login",
+                "description": "Saves **user2Token** and **user2Phone** to collection variables."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Events",
+          "item": [
+            {
+              "name": "List all events",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{gatewayBaseUrl}}/api/events",
+                "description": "Public GET (no Bearer required)."
+              }
+            },
+            {
+              "name": "Get event by id",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{gatewayBaseUrl}}/api/events/{{eventId}}"
+              }
+            },
+            {
+              "name": "Create event (ADMIN)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"title\": \"Colombo Music Fest\",\n  \"description\": \"Live global music night\",\n  \"venue\": \"BMICH\",\n  \"startsAt\": \"2026-06-12T18:30:00Z\",\n  \"endsAt\": \"2026-06-12T22:00:00Z\",\n  \"totalRows\": 8,\n  \"seatsPerRow\": 10,\n  \"vipRows\": 2,\n  \"vipPrice\": 120.00,\n  \"regularPrice\": 60.00\n}"
+                },
+                "url": "{{gatewayBaseUrl}}/api/events"
+              }
+            },
+            {
+              "name": "Update event status (ADMIN)",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"PUBLISHED\"\n}"
+                },
+                "url": "{{gatewayBaseUrl}}/api/events/{{eventId}}/status",
+                "description": "Status: DRAFT | PUBLISHED | CANCELLED"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Seats",
+          "item": [
+            {
+              "name": "List seats for event",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{gatewayBaseUrl}}/api/seats/events/{{eventId}}",
+                "description": "Public GET. Pick seat numbers for **Create booking**."
+              }
+            }
+          ]
+        },
+        {
+          "name": "Bookings",
+          "item": [
+            {
+              "name": "Create booking (CUSTOMER)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if ([200, 201, 409].indexOf(pm.response.code) >= 0) {",
+                      "    var j = pm.response.json();",
+                      "    if (j.bookingReference) pm.collectionVariables.set('bookingReference', j.bookingReference);",
+                      "    if (j.paymentReference) pm.collectionVariables.set('paymentReference', j.paymentReference);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{customerToken}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"eventId\": 1,\n  \"seatNumbers\": [\"A1\", \"A2\"],\n  \"paymentMethod\": \"CARD\",\n  \"cardToken\": \"4242424242424242\"\n}"
+                },
+                "url": "{{gatewayBaseUrl}}/api/bookings",
+                "description": "**No `userPhone` in body** — gateway reads `phone` from JWT and sends **X-User-Phone** (after **Login (Customer)**, matches **{{customerPhone}}**). Use **FAIL** or **0000** suffix for decline. With **STRIPE_SECRET_KEY**, use test card or **pm_** id. Saves **bookingReference** / **paymentReference**."
+              }
+            },
+            {
+              "name": "Create booking (ADMIN)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "exec": [
+                      "if ([200, 201, 409].indexOf(pm.response.code) >= 0) {",
+                      "    var j = pm.response.json();",
+                      "    if (j.bookingReference) pm.collectionVariables.set('bookingReference', j.bookingReference);",
+                      "    if (j.paymentReference) pm.collectionVariables.set('paymentReference', j.paymentReference);",
+                      "}"
+                    ],
+                    "type": "text/javascript"
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  { "key": "Content-Type", "value": "application/json" },
+                  { "key": "Authorization", "value": "Bearer {{adminToken}}" }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"eventId\": 1,\n  \"seatNumbers\": [\"B1\", \"B2\"],\n  \"paymentMethod\": \"CARD\",\n  \"cardToken\": \"4242424242424242\"\n}"
+                },
+                "url": "{{gatewayBaseUrl}}/api/bookings",
+                "description": "Run **Login (Admin)** first. Phone on booking is **{{adminPhone}}** from JWT. Uses seats **B1/B2** to avoid clashing with customer **A1/A2** in the same run."
+              }
+            },
+            {
+              "name": "Get booking by reference",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+                "url": "{{gatewayBaseUrl}}/api/bookings/{{bookingReference}}"
+              }
+            },
+            {
+              "name": "My bookings",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+                "url": "{{gatewayBaseUrl}}/api/bookings/me"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Payments & notifications (via gateway)",
+          "item": [
+            {
+              "name": "Get payment by reference",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+                "url": "{{gatewayBaseUrl}}/api/payments/{{paymentReference}}",
+                "description": "Gateway requires JWT. Set **paymentReference** (e.g. from create booking response)."
+              }
+            },
+            {
+              "name": "Get notification logs by booking",
+              "request": {
+                "method": "GET",
+                "header": [{ "key": "Authorization", "value": "Bearer {{customerToken}}" }],
+                "url": "{{gatewayBaseUrl}}/api/notifications/bookings/{{bookingReference}}"
+              }
+            }
+          ]
+        },
+        {
+          "name": "Platform",
+          "item": [
+            {
+              "name": "Gateway health",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{gatewayBaseUrl}}/actuator/health"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2 - Event Service (direct :8081)",
+      "item": [
+        {
+          "name": "List all events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{eventServiceUrl}}/api/events"
+          }
+        },
+        {
+          "name": "Get event by id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{eventServiceUrl}}/api/events/{{eventId}}"
+          }
+        },
+        {
+          "name": "Create event (send X-User-Role)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-User-Role", "value": "ADMIN" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Direct Event Service Test\",\n  \"description\": \"Created via Postman direct to 8081\",\n  \"venue\": \"Hall A\",\n  \"startsAt\": \"2026-07-01T18:00:00Z\",\n  \"endsAt\": \"2026-07-01T22:00:00Z\",\n  \"totalRows\": 4,\n  \"seatsPerRow\": 6,\n  \"vipRows\": 1,\n  \"vipPrice\": 100.00,\n  \"regularPrice\": 50.00\n}"
+            },
+            "url": "{{eventServiceUrl}}/api/events",
+            "description": "No JWT — gateway normally sets **X-User-Role**; use ADMIN."
+          }
+        },
+        {
+          "name": "Update event status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-User-Role", "value": "ADMIN" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PUBLISHED\"\n}"
+            },
+            "url": "{{eventServiceUrl}}/api/events/{{eventId}}/status"
+          }
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{eventServiceUrl}}/actuator/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - Seat Service (direct :8082)",
+      "item": [
+        {
+          "name": "List seats for event",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seatServiceUrl}}/api/seats/events/{{eventId}}"
+          }
+        },
+        {
+          "name": "Internal — Reserve seats",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Internal-Token", "value": "{{internalApiKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventId\": 1,\n  \"bookingReference\": \"postman-test-booking\",\n  \"seatNumbers\": [\"A1\"]\n}"
+            },
+            "url": "{{seatServiceUrl}}/internal/seats/reserve"
+          }
+        },
+        {
+          "name": "Internal — Confirm seats",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Internal-Token", "value": "{{internalApiKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingReference\": \"postman-test-booking\"\n}"
+            },
+            "url": "{{seatServiceUrl}}/internal/seats/confirm"
+          }
+        },
+        {
+          "name": "Internal — Release seats",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Internal-Token", "value": "{{internalApiKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingReference\": \"postman-test-booking\"\n}"
+            },
+            "url": "{{seatServiceUrl}}/internal/seats/release"
+          }
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{seatServiceUrl}}/actuator/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - Booking Service (direct :8083)",
+      "item": [
+        {
+          "name": "Create booking (gateway headers)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-User-Id", "value": "user-1" },
+              { "key": "X-User-Email", "value": "customer@ticketing.local" },
+              { "key": "X-User-Phone", "value": "{{customerPhone}}" },
+              { "key": "X-User-Role", "value": "CUSTOMER" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"eventId\": 1,\n  \"seatNumbers\": [\"A3\"],\n  \"paymentMethod\": \"CARD\",\n  \"cardToken\": \"4242424242424242\"\n}"
+            },
+            "url": "{{bookingServiceUrl}}/api/bookings",
+            "description": "Bypass gateway: send **X-User-Phone** (defaults **{{customerPhone}}**; run **Login (Customer)** or set variable). Matches demo customer **user-1**."
+          }
+        },
+        {
+          "name": "Get booking by reference",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-User-Id", "value": "user-1" },
+              { "key": "X-User-Email", "value": "customer@ticketing.local" },
+              { "key": "X-User-Phone", "value": "{{customerPhone}}" },
+              { "key": "X-User-Role", "value": "CUSTOMER" }
+            ],
+            "url": "{{bookingServiceUrl}}/api/bookings/{{bookingReference}}"
+          }
+        },
+        {
+          "name": "My bookings",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "X-User-Id", "value": "user-1" },
+              { "key": "X-User-Email", "value": "customer@ticketing.local" },
+              { "key": "X-User-Phone", "value": "{{customerPhone}}" },
+              { "key": "X-User-Role", "value": "CUSTOMER" }
+            ],
+            "url": "{{bookingServiceUrl}}/api/bookings/me"
+          }
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{bookingServiceUrl}}/actuator/health"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 - Payment & Notification Service (direct :8084)",
+      "item": [
+        {
+          "name": "Internal — Process payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Internal-Token", "value": "{{internalApiKey}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookingReference\": \"manual-postman-1\",\n  \"userEmail\": \"customer@ticketing.local\",\n  \"amount\": 99.99,\n  \"paymentMethod\": \"CARD\",\n  \"cardToken\": \"4242424242424242\"\n}"
+            },
+            "url": "{{paymentServiceUrl}}/internal/payments/process"
+          }
+        },
+        {
+          "name": "Get payment by reference",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{paymentServiceUrl}}/api/payments/{{paymentReference}}"
+          }
+        },
+        {
+          "name": "Get notification logs by booking",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{paymentServiceUrl}}/api/notifications/bookings/{{bookingReference}}"
+          }
+        },
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{paymentServiceUrl}}/actuator/health"
+          }
+        }
+      ]
+    }
+  ]
+}
