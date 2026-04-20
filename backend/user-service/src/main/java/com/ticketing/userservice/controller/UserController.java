@@ -22,6 +22,9 @@ public class UserController {
         return userApplicationService.register(request);
     }
 
+
+
+    
     @GetMapping("/{userId}")
     @Operation(summary = "Get user profile by userId")
     public UserResponse getProfile(
