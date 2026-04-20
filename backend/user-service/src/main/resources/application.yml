@@ -9,12 +9,12 @@ spring:
     username: ${USER_DB_USERNAME:neondb_owner}
     password: ${USER_DB_PASSWORD:npg_cd8jbG0HYQnq}
   jpa:
-    show-sql: true
+    show-sql: ${SHOW_SQL:false}
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
+        format_sql: ${FORMAT_SQL:false}
 
 management:
   endpoints:
@@ -37,6 +37,6 @@ app:
 
 logging:
   level:
-    org.springframework.jdbc.core: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.jdbc.core: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO
