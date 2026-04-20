@@ -5,9 +5,9 @@ export default function AdminEventsPage() {
   return (
     <div className="shell py-10 sm:py-14">
       <SectionHeading
-        eyebrow="Organizer view"
-        title="Publish events without switching to Swagger during the demo."
-        description="A purpose-built admin screen makes the full product story stronger: publish an event, wait for seat generation, then immediately book that event from the customer-facing UI."
+        eyebrow="Organizer studio"
+        title="Create and manage events."
+        description="Create new events, set seat pricing and availability, and manage listings. Everything you need to run your event in one place."
       />
       <div className="mt-8">
         <AdminEventStudio />

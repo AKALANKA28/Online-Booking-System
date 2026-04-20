@@ -257,11 +257,9 @@ export function EventBookingExperience({
               <h2 className="mt-2 font-display text-3xl font-bold text-ink">
                 Pick your exact seats.
               </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-smoke">
-                Inspired by the strongest ticketing flows: a clear interactive
-                seat map, price-aware filters, and a sticky booking summary that
-                keeps the purchase moving.
-              </p>
+               <p className="mt-3 max-w-2xl text-sm leading-6 text-smoke">
+                 Select your seats with precision using our interactive map. Real-time availability ensures you get the perfect spot.
+               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <div className="metric-card">
@@ -429,9 +427,7 @@ export function EventBookingExperience({
           ) : (
             <div className="rounded-2xl border border-dashed border-line bg-cloud px-5 py-5 text-sm text-smoke">
               <p>
-                Seat inventory is syncing. This can happen right after
-                publishing an event while asynchronous seat generation
-                completes.
+                Seat map is loading. This can take a few moments after the event is published.
               </p>
               <button
                 type="button"
@@ -441,7 +437,7 @@ export function EventBookingExperience({
                 disabled={refreshingSeats}
                 className="mt-3 rounded-full border border-line bg-white px-4 py-2 text-xs font-semibold text-ink disabled:opacity-60"
               >
-                {refreshingSeats ? "Refreshing seats..." : "Reload seats"}
+                {refreshingSeats ? "Refreshing..." : "Reload"}
               </button>
             </div>
           )}
@@ -506,7 +502,7 @@ export function EventBookingExperience({
             </label>
 
             <label className="block">
-              <span className="eyebrow">Demo card token</span>
+              <span className="eyebrow">Card number</span>
               <input
                 value={cardToken}
                 onChange={(eventInput) => setCardToken(eventInput.target.value)}
@@ -514,11 +510,7 @@ export function EventBookingExperience({
                 className="mt-3 w-full rounded-2xl border border-line bg-white px-4 py-4 text-sm outline-none focus:border-cobalt"
               />
               <p className="mt-2 text-xs text-smoke">
-                Use{" "}
-                <span className="font-semibold text-ink">4242424242424242</span>{" "}
-                for success. A token ending in{" "}
-                <span className="font-semibold text-ink">0000</span> simulates a
-                failed payment in the Spring backend.
+                Your payment information is secure and encrypted.
               </p>
             </label>
 
@@ -536,14 +528,7 @@ export function EventBookingExperience({
                   : "Sign in to continue"}
             </button>
 
-            {!user && hydrated && (
-              <p className="text-xs leading-6 text-smoke">
-                Authentication is handled by your Spring API gateway. This
-                front-end stores the JWT locally and forwards it through a
-                Next.js proxy so you can avoid browser CORS issues during local
-                development.
-              </p>
-            )}
+
 
             {error && (
               <p className="rounded-2xl border border-ember/20 bg-emberSoft px-4 py-3 text-sm font-medium text-ember">
@@ -586,23 +571,7 @@ export function EventBookingExperience({
           </div>
         </div>
 
-        <div className="surface p-6">
-          <p className="eyebrow">Why this layout works</p>
-          <ul className="mt-4 space-y-3 text-sm leading-6 text-smoke">
-            <li>
-              • Exact-seat map with price-aware filtering keeps decision-making
-              fast.
-            </li>
-            <li>
-              • Sticky order rail preserves context instead of hiding the
-              checkout entry point.
-            </li>
-            <li>
-              • Quick picks support the “best 2 / best 4” behavior users expect
-              from high-volume ticket sites.
-            </li>
-          </ul>
-        </div>
+
       </aside>
     </section>
   );

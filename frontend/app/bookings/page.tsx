@@ -8,11 +8,11 @@ export default async function BookingsPage() {
 
   return (
     <div className="shell py-10 sm:py-14">
-      <SectionHeading
-        eyebrow="Account center"
-        title="Tickets, payment records, and notification logs in one place."
-        description="This page exists to showcase the full microservice flow after checkout: booking creation, payment reference storage, and notification delivery history."
-      />
+       <SectionHeading
+         eyebrow="My tickets"
+         title="Your bookings, all in one place."
+         description="View your tickets, track payment status, and stay updated on your event plans."
+       />
       <div className="mt-8">
         <BookingsDashboard events={events} />
       </div>

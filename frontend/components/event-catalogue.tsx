@@ -90,8 +90,7 @@ export function EventCatalogue({ initialEvents }: { initialEvents: EventRecord[]
       </div>
 
       <div className="flex items-center justify-between gap-4 text-sm text-smoke">
-        <p>{events.length} experiences available</p>
-        <p>Responsive discovery grid · real backend events · clean booking funnel</p>
+        <p>{events.length} events available</p>
       </div>
 
       {events.length > 0 ? (
@@ -99,10 +98,10 @@ export function EventCatalogue({ initialEvents }: { initialEvents: EventRecord[]
           {events.map((event, index) => <EventCard key={event.id} event={event} index={index} />)}
         </div>
       ) : (
-        <div className="surface p-10 text-center">
-          <p className="font-display text-2xl font-bold text-ink">No events match those filters yet.</p>
-          <p className="mt-3 text-sm leading-6 text-smoke">Try broadening the search, toggling the category, or using the organizer view to publish a new event.</p>
-        </div>
+         <div className="surface p-10 text-center">
+           <p className="font-display text-2xl font-bold text-ink">No events match those filters yet.</p>
+           <p className="mt-3 text-sm leading-6 text-smoke">Try broadening your search or adjusting filters to find what you're looking for.</p>
+         </div>
       )}
     </div>
   );

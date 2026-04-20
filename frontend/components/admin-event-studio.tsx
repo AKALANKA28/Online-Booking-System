@@ -15,12 +15,11 @@ import { formatDateRange } from "@/lib/formatters";
 import { EventRecord } from "@/lib/types";
 
 const defaultState = {
-  title: "Colombo Spotlight Sessions",
-  description:
-    "A polished live-session format with intimate seating, premium front rows, and quick digital ticket delivery.",
-  venue: "Independence Hall",
-  startsAt: "2026-08-20T18:30",
-  endsAt: "2026-08-20T22:00",
+  title: "",
+  description: "",
+  venue: "",
+  startsAt: "",
+  endsAt: "",
   totalRows: 8,
   seatsPerRow: 10,
   vipRows: 2,
@@ -146,7 +145,7 @@ export function AdminEventStudio() {
         setValidationErrors(extractValidationMessages(caught.payload));
       } else {
         setError(
-          "Could not create the event. Confirm the gateway and RabbitMQ-backed services are running.",
+          "Could not create the event. Please check your connection and try again.",
         );
       }
     } finally {
@@ -224,9 +223,7 @@ export function AdminEventStudio() {
           Admin sign-in required
         </h3>
         <p className="mt-3 max-w-xl text-sm leading-6 text-smoke">
-          This page posts directly to{" "}
-          <span className="font-semibold text-ink">/api/events</span>, which
-          your gateway protects for admin users only.
+          This area is restricted to administrators only.
         </p>
         <Link
           href="/login?next=/admin/events"
@@ -241,8 +238,7 @@ export function AdminEventStudio() {
   if (user.role !== "ADMIN") {
     return (
       <div className="surface p-8 text-sm font-semibold text-ember">
-        You are signed in, but not as an admin. Use the admin demo account to
-        publish events.
+        You need administrator privileges to access this page.
       </div>
     );
   }
@@ -252,12 +248,10 @@ export function AdminEventStudio() {
       <form onSubmit={onSubmit} className="surface p-8">
         <p className="eyebrow">Organizer studio</p>
         <h3 className="mt-2 font-display text-3xl font-bold text-ink">
-          Create an event that instantly feeds the seat service.
+          Create a new event
         </h3>
         <p className="mt-3 text-sm leading-6 text-smoke">
-          Publishing through this screen gives you a complete demo: event
-          created in the event service, seats generated asynchronously, then
-          available for booking in the customer flow.
+          Publish your event in minutes. Set the details, configure seats, and go live. Attendees can start booking immediately.
         </p>
 
         <div className="mt-8 grid gap-5 md:grid-cols-2">
@@ -398,20 +392,14 @@ export function AdminEventStudio() {
               "linear-gradient(135deg, #130E2E 0%, #31205D 48%, #7546F1 100%)",
           }}
         >
-          <p className="eyebrow text-white/70">Why this matters</p>
+          <p className="eyebrow text-white/70">How it works</p>
           <h4 className="mt-2 font-display text-3xl font-bold text-white">
-            This gives you a complete admin-to-customer story.
+            Your event goes live in minutes.
           </h4>
           <ul className="mt-5 space-y-3 text-sm leading-6 text-white/80">
-            <li>• Admin creates the event in the event service.</li>
-            <li>
-              • Seat service consumes the event-created message and generates
-              inventory.
-            </li>
-            <li>
-              • Customers immediately see the event and book through the same
-              web UI.
-            </li>
+            <li>• Create your event and set seat pricing.</li>
+            <li>• Publish to make it visible to attendees.</li>
+            <li>• Seats become available for booking instantly.</li>
           </ul>
         </div>
 
@@ -422,8 +410,7 @@ export function AdminEventStudio() {
               {created.title}
             </h4>
             <p className="mt-3 text-sm leading-6 text-smoke">
-              Event #{created.id} is live. Give the seat service a few seconds
-              to create the seat map, then open the event detail page.
+              Event is live! Seats are now being generated. You can view the event page shortly.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
@@ -448,9 +435,7 @@ export function AdminEventStudio() {
             Cancel or delete events
           </h4>
           <p className="mt-3 text-sm leading-6 text-smoke">
-            Cancellation triggers asynchronous fan-out to booking and seat
-            services through RabbitMQ. Deletion permanently removes the event
-            from event-service.
+            Cancelling an event will notify all ticket holders and process refunds according to our policy. Deleting an event permanently removes it.
           </p>
 
           {managementError && (
