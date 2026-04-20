@@ -1,20 +1,26 @@
 package com.ticketing.paymentnotificationservice.service;
 
+import com.ticketing.paymentnotificationservice.config.IntegrationProperties;
 import com.ticketing.paymentnotificationservice.entity.NotificationLog;
 import com.ticketing.paymentnotificationservice.entity.NotificationStatus;
+import com.ticketing.paymentnotificationservice.integration.NotificationDispatchService;
 import com.ticketing.paymentnotificationservice.messaging.BookingResultMessage;
 import com.ticketing.paymentnotificationservice.repository.NotificationLogRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class NotificationApplicationService {
 
     private final NotificationLogRepository notificationLogRepository;
+    private final IntegrationProperties integrationProperties;
+    private final NotificationDispatchService notificationDispatchService;
 
     @Transactional
     public void handleBookingResult(BookingResultMessage message) {
@@ -31,16 +37,49 @@ public class NotificationApplicationService {
                     + ". Any reserved seats have been released.";
         }
 
-        NotificationLog log = NotificationLog.builder()
+        boolean needEmail = integrationProperties.sendgridEnabled();
+        boolean needSms = integrationProperties.twilioSmsEnabled()
+                && message.userPhone() != null
+                && !message.userPhone().isBlank();
+        boolean anyDispatch = needEmail || needSms;
+
+        String channel;
+        if (needEmail && needSms) {
+            channel = "EMAIL+SMS";
+        } else if (needSms) {
+            channel = "SMS";
+        } else {
+            channel = "EMAIL";
+        }
+
+        NotificationStatus status = NotificationStatus.SENT;
+        String storedMessage = body;
+
+        if (anyDispatch) {
+            try {
+                if (needEmail) {
+                    notificationDispatchService.sendEmail(message.userEmail(), subject, body);
+                }
+                if (needSms) {
+                    notificationDispatchService.sendSms(message.userPhone(), subject + "\n" + body);
+                }
+            } catch (Exception e) {
+                log.warn("Notification dispatch failed for booking {}", message.bookingReference(), e);
+                status = NotificationStatus.FAILED;
+                storedMessage = body + "\nDispatch error: " + e.getMessage();
+            }
+        }
+
+        NotificationLog logEntry = NotificationLog.builder()
                 .bookingReference(message.bookingReference())
                 .recipient(message.userEmail())
-                .channel("EMAIL")
+                .channel(channel)
                 .subject(subject)
-                .message(body)
-                .status(NotificationStatus.SENT)
+                .message(storedMessage)
+                .status(status)
                 .build();
 
-        notificationLogRepository.save(log);
+        notificationLogRepository.save(logEntry);
     }
 
     @Transactional(readOnly = true)
