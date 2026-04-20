@@ -26,6 +26,9 @@ spring:
 app:
   rabbitmq:
     exchange: ticketing.events
+services:
+  booking:
+    base-url: ${SERVICES_BOOKING_BASE_URL:http://localhost:8083}
 
 management:
   endpoints:

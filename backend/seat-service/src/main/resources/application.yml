@@ -27,6 +27,7 @@ app:
   rabbitmq:
     exchange: ticketing.events
     queue: seat.event.created.queue
+    cancelled-queue: seat.event.cancelled.queue
   security:
     internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
   hold-duration-minutes: 10

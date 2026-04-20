@@ -3,14 +3,7 @@ package com.ticketing.bookingservice.service;
 import com.ticketing.bookingservice.client.PaymentServiceClient;
 import com.ticketing.bookingservice.client.SeatServiceClient;
 import com.ticketing.bookingservice.dto.*;
-import com.ticketing.bookingservice.entity.Booking;
-import com.ticketing.bookingservice.entity.BookingItem;
 import com.ticketing.bookingservice.entity.BookingStatus;
-import com.ticketing.bookingservice.exception.NotFoundException;
-import com.ticketing.bookingservice.messaging.BookingResultPublisher;
-import com.ticketing.bookingservice.repository.BookingRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -24,6 +17,13 @@ public class BookingApplicationService {
     private final SeatServiceClient seatServiceClient;
     private final PaymentServiceClient paymentServiceClient;
     private final BookingResultPublisher bookingResultPublisher;
+
+    // ... existing methods ...
+
+    @Transactional(readOnly = true)
+    public long getSoldSeatCount(Long eventId) {
+        return bookingRepository.countSoldSeatsByEventIdAndStatus(eventId, BookingStatus.CONFIRMED);
+    }
 
     @Transactional
     public Booking createBooking(CreateBookingRequest request, UserContext context) {

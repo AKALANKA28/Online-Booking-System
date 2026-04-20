@@ -3,6 +3,7 @@ package com.ticketing.eventservice.controller;
 import com.ticketing.eventservice.dto.EventRequest;
 import com.ticketing.eventservice.dto.EventResponse;
 import com.ticketing.eventservice.dto.EventStatusUpdateRequest;
+import com.ticketing.eventservice.dto.EventStatsResponse;
 import com.ticketing.eventservice.service.EventApplicationService;
 import com.ticketing.eventservice.util.GatewaySecurityGuards;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +20,22 @@ import java.util.List;
 public class EventController {
 
     private final EventApplicationService eventApplicationService;
+
+    // ... existing methods ...
+
+    @PostMapping("/{eventId}/cancel")
+    @Operation(summary = "Cancel an event (ADMIN only)")
+    public EventResponse cancel(@RequestHeader(value = "X-User-Role", required = false) String role,
+                                @PathVariable Long eventId) {
+        GatewaySecurityGuards.requireAdmin(role);
+        return EventResponse.from(eventApplicationService.cancel(eventId));
+    }
+
+    @GetMapping("/{eventId}/stats")
+    @Operation(summary = "Get event statistics")
+    public EventStatsResponse getStats(@PathVariable Long eventId) {
+        return eventApplicationService.getEventStats(eventId);
+    }
 
     @GetMapping
     @Operation(summary = "List all events")

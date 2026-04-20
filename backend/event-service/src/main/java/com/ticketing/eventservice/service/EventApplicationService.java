@@ -1,9 +1,5 @@
 package com.ticketing.eventservice.service;
 
-import com.ticketing.eventservice.dto.EventRequest;
-import com.ticketing.eventservice.entity.Event;
-import com.ticketing.eventservice.entity.EventStatus;
-import com.ticketing.eventservice.exception.NotFoundException;
 import com.ticketing.eventservice.messaging.EventMessagePublisher;
 import com.ticketing.eventservice.repository.EventRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +14,21 @@ public class EventApplicationService {
 
     private final EventRepository eventRepository;
     private final EventMessagePublisher eventMessagePublisher;
+
+    // ... existing methods ...
+
+    @Transactional
+    public Event cancel(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event not found: " + eventId));
+        if (event.getStatus() == EventStatus.CANCELLED) {
+            throw new IllegalArgumentException("Event is already cancelled");
+        }
+        event.setStatus(EventStatus.CANCELLED);
+        Event saved = eventRepository.save(event);
+        eventMessagePublisher.publishEventCancelled(saved);
+        return saved;
+    }
 
     @Transactional(readOnly = true)
     public List<Event> findAll() {
@@ -63,6 +74,11 @@ public class EventApplicationService {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found: " + eventId));
         event.setStatus(status);
-        return eventRepository.save(event);
+        Event saved = eventRepository.save(event);
+        
+        if (status == EventStatus.CANCELLED) {
+            eventMessagePublisher.publishEventCancelled(saved);
+        }
+        return saved;
     }
 }

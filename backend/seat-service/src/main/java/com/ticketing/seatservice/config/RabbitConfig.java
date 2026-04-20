@@ -28,6 +28,16 @@ public class RabbitConfig {
     }
 
     @Bean
+    public Queue eventCancelledQueue(@Value("${app.rabbitmq.cancelled-queue}") String queueName) {
+        return new Queue(queueName, true);
+    }
+
+    @Bean  
+    public Binding eventCancelledBinding(Queue eventCancelledQueue, TopicExchange ticketingExchange) {
+        return BindingBuilder.bind(eventCancelledQueue).to(ticketingExchange).with("event.cancelled");
+    }
+
+    @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }

@@ -32,6 +32,7 @@ services:
 app:
   rabbitmq:
     exchange: ticketing.events
+    event-cancelled-queue: booking.event.cancelled.queue
   security:
     internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
 

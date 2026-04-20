@@ -131,6 +131,21 @@ public class SeatInventoryService {
         }
     }
 
+    @Transactional
+    public void releaseSeatsForEvent(Long eventId) {
+        List<Seat> seats = seatRepository.findByEventId(eventId);
+        for (Seat seat : seats) {
+            if (seat.getStatus() == SeatStatus.BOOKED || seat.getStatus() == SeatStatus.RESERVED) {
+                seat.setStatus(SeatStatus.AVAILABLE);
+                seat.setLockedByBookingReference(null);
+                seat.setLockedUntil(null);
+            }
+        }
+        if (!seats.isEmpty()) {
+            seatRepository.saveAll(seats);
+        }
+    }
+
     @Scheduled(fixedDelay = 60000)
     @Transactional
     public void releaseExpiredReservations() {

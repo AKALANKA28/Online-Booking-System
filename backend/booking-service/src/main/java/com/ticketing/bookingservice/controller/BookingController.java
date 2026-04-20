@@ -2,6 +2,7 @@ package com.ticketing.bookingservice.controller;
 
 import com.ticketing.bookingservice.dto.BookingResponse;
 import com.ticketing.bookingservice.dto.CreateBookingRequest;
+import com.ticketing.bookingservice.dto.EventStatsResponse;
 import com.ticketing.bookingservice.dto.UserContext;
 import com.ticketing.bookingservice.service.BookingApplicationService;
 import com.ticketing.bookingservice.util.UserContextGuards;
@@ -20,6 +21,15 @@ import java.util.List;
 public class BookingController {
 
     private final BookingApplicationService bookingApplicationService;
+
+    // ... existing methods ...
+
+    @GetMapping("/events/{eventId}/stats")
+    @Operation(summary = "Get sold seat count for an event")
+    public EventStatsResponse getEventStats(@PathVariable Long eventId) {
+        long soldSeats = bookingApplicationService.getSoldSeatCount(eventId);
+        return new EventStatsResponse(eventId, soldSeats);
+    }
 
     @PostMapping
     @Operation(summary = "Create a booking for the authenticated user")
