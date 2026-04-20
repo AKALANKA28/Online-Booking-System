@@ -34,7 +34,8 @@ public class Payment {
     @Column(nullable = false, length = 20)
     private String paymentMethod;
 
-    @Column(nullable = false, length = 64)
+    /** Simulator: SIM-… ; Stripe: payment intent id (pi_…). */
+    @Column(nullable = false, length = 128)
     private String providerReference;
 
     @Enumerated(EnumType.STRING)
