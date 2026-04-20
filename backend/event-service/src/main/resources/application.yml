@@ -1,6 +1,8 @@
 server:
   port: ${SERVER_PORT:8081}
 
+debug: ${APP_DEBUG:true}
+
 spring:
   application:
     name: event-service
@@ -26,6 +28,8 @@ spring:
 app:
   rabbitmq:
     exchange: ticketing.events
+  security:
+    internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
 services:
   booking:
     base-url: ${SERVICES_BOOKING_BASE_URL:http://localhost:8083}
