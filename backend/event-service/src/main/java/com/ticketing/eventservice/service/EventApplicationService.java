@@ -1,5 +1,9 @@
 package com.ticketing.eventservice.service;
 
+import com.ticketing.eventservice.dto.EventRequest;
+import com.ticketing.eventservice.entity.Event;
+import com.ticketing.eventservice.entity.EventStatus;
+import com.ticketing.eventservice.exception.NotFoundException;
 import com.ticketing.eventservice.messaging.EventMessagePublisher;
 import com.ticketing.eventservice.repository.EventRepository;
 import lombok.RequiredArgsConstructor;

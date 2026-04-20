@@ -3,7 +3,7 @@ package com.ticketing.eventservice.controller;
 import com.ticketing.eventservice.dto.EventRequest;
 import com.ticketing.eventservice.dto.EventResponse;
 import com.ticketing.eventservice.dto.EventStatusUpdateRequest;
-import com.ticketing.eventservice.dto.EventStatsResponse;
+//import com.ticketing.eventservice.dto.EventStatsResponse;
 import com.ticketing.eventservice.service.EventApplicationService;
 import com.ticketing.eventservice.util.GatewaySecurityGuards;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,11 +31,11 @@ public class EventController {
         return EventResponse.from(eventApplicationService.cancel(eventId));
     }
 
-    @GetMapping("/{eventId}/stats")
-    @Operation(summary = "Get event statistics")
-    public EventStatsResponse getStats(@PathVariable Long eventId) {
-        return eventApplicationService.getEventStats(eventId);
-    }
+//    @GetMapping("/{eventId}/stats")
+//    @Operation(summary = "Get event statistics")
+//    public EventStatsResponse getStats(@PathVariable Long eventId) {
+//        return eventApplicationService.getEventStats(eventId);
+//    }
 
     @GetMapping
     @Operation(summary = "List all events")
