@@ -9,6 +9,7 @@ export function LoginForm() {
   const [mode, setMode] = useState<"signin" | "register">("signin");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,12 @@ export function LoginForm() {
 
     try {
       if (mode === "register") {
-        await registerUser({ username, email, password });
+        await registerUser({
+          username,
+          email,
+          password,
+          ...(phone.trim() ? { phone: phone.trim() } : {}),
+        });
         setSuccess("Account created. Signing you in now...");
       }
 
@@ -137,6 +143,19 @@ export function LoginForm() {
                 type="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
+                className="mt-3 w-full rounded-2xl border border-line bg-white px-4 py-4 text-sm outline-none focus:border-cobalt"
+              />
+            </label>
+          )}
+
+          {mode === "register" && (
+            <label className="block">
+              <span className="eyebrow">Mobile (optional, E.164)</span>
+              <input
+                type="tel"
+                placeholder="+15551234567"
+                value={phone}
+                onChange={(event) => setPhone(event.target.value)}
                 className="mt-3 w-full rounded-2xl border border-line bg-white px-4 py-4 text-sm outline-none focus:border-cobalt"
               />
             </label>

@@ -7,6 +7,7 @@ public record InternaluserValidationResponse(
         String userId,
         String username,
         String email,
+        String phone,
         UserRole role,
         boolean valid
 ){
@@ -15,12 +16,13 @@ public record InternaluserValidationResponse(
                 user.getUserId(),
                 user.getUsername(),
                 user.getEmail(),
+                user.getPhone(),
                 user.getRole(),
                 true
         );
     }
 
     public static InternaluserValidationResponse invalid() {
-        return new InternaluserValidationResponse(null, null, null, null, false);
+        return new InternaluserValidationResponse(null, null, null, null, null, false);
     }
 }

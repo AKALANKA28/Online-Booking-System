@@ -24,7 +24,7 @@ public class JwtService {
         this.tokenValidityHours = tokenValidityHours;
     }
 
-    public String generateToken(String userId, String username, String email, String role) {
+    public String generateToken(String userId, String username, String email, String phone, String role) {
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         OffsetDateTime expiry = now.plusHours(tokenValidityHours);
 
@@ -32,6 +32,7 @@ public class JwtService {
                 .subject(username)
                 .claim("userId", userId)
                 .claim("email", email)
+                .claim("phone", phone != null ? phone : "")
                 .claim("role", role)
                 .issuedAt(Date.from(now.toInstant()))
                 .expiration(Date.from(expiry.toInstant()))

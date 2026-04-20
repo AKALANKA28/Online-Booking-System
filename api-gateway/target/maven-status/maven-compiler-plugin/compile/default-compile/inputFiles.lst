@@ -1,8 +1,0 @@
-/src/api-gateway/src/main/java/com/ticketing/apigateway/ApiGatewayApplication.java
-/src/api-gateway/src/main/java/com/ticketing/apigateway/controller/AuthController.java
-/src/api-gateway/src/main/java/com/ticketing/apigateway/dto/LoginRequest.java
-/src/api-gateway/src/main/java/com/ticketing/apigateway/dto/LoginResponse.java
-/src/api-gateway/src/main/java/com/ticketing/apigateway/dto/UserResponse.java
-/src/api-gateway/src/main/java/com/ticketing/apigateway/filter/JwtAuthenticationFilter.java
-/src/api-gateway/src/main/java/com/ticketing/apigateway/service/DemoUserService.java
-/src/api-gateway/src/main/java/com/ticketing/apigateway/service/JwtService.java

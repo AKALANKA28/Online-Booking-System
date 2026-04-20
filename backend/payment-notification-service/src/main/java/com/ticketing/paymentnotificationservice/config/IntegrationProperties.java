@@ -9,13 +9,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "app.integrations")
 public class IntegrationProperties {
 
-    private final Stripe stripe = new Stripe();
-    private final Sendgrid sendgrid = new Sendgrid();
-    private final Twilio twilio = new Twilio();
+    private final StripeProps stripe = new StripeProps();
+    private final SendgridProps sendgrid = new SendgridProps();
+    private final TwilioProps twilio = new TwilioProps();
 
     @Getter
     @Setter
-    public static class Stripe {
+    public static class StripeProps {
         /**
          * sk_test_... — when non-blank, real Stripe test-mode charges are used.
          */
@@ -26,7 +26,7 @@ public class IntegrationProperties {
 
     @Getter
     @Setter
-    public static class Sendgrid {
+    public static class SendgridProps {
         private String apiKey = "";
         /** Verified sender in SendGrid (single sender or domain). */
         private String fromEmail = "";
@@ -35,7 +35,7 @@ public class IntegrationProperties {
 
     @Getter
     @Setter
-    public static class Twilio {
+    public static class TwilioProps {
         private String accountSid = "";
         private String authToken = "";
         /** E.164, e.g. +15005550006 (magic test number in trial). */

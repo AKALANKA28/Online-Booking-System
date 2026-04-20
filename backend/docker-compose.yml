@@ -1,7 +1,11 @@
+# Run from this directory so Docker Compose loads `.env` here for ${VAR} substitution:
+#   cd backend && docker compose up --build
+#
+# Do not set `container_name` on services: fixed names clash with other projects (e.g. "rabbitmq"
+# already exists). Compose DNS uses the *service* name (rabbitmq, event-service, …) unchanged.
 services:
   rabbitmq:
     image: rabbitmq:3.13-management
-    container_name: rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-guest}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-guest}
@@ -13,7 +17,6 @@ services:
     build:
       context: .
       dockerfile: event-service/Dockerfile
-    container_name: event-service
     depends_on:
       - rabbitmq
     environment:
@@ -34,7 +37,6 @@ services:
     build:
       context: .
       dockerfile: seat-service/Dockerfile
-    container_name: seat-service
     depends_on:
       - rabbitmq
     environment:
@@ -54,7 +56,6 @@ services:
     build:
       context: .
       dockerfile: booking-service/Dockerfile
-    container_name: booking-service
     depends_on:
       - rabbitmq
       - seat-service
@@ -68,6 +69,9 @@ services:
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-guest}
       SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-guest}
+      # Overrides booking-service default CloudAMQP URI so publisher + payment listener share this broker
+      SPRING_RABBITMQ_ADDRESSES: amqp://${RABBITMQ_DEFAULT_USER:-guest}:${RABBITMQ_DEFAULT_PASS:-guest}@rabbitmq:5672/
+      SPRING_RABBITMQ_SSL_ENABLED: "false"
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-internal-demo-secret}
       SERVICES_SEAT_BASE_URL: http://seat-service:8082
       SERVICES_PAYMENT_BASE_URL: http://payment-notification-service:8084
@@ -78,7 +82,6 @@ services:
     build:
       context: .
       dockerfile: payment-notification-service/Dockerfile
-    container_name: payment-notification-service
     depends_on:
       - rabbitmq
     environment:
@@ -108,12 +111,12 @@ services:
     build:
       context: .
       dockerfile: user-service/Dockerfile
-    container_name: user-service
     environment:
       SERVER_PORT: 8085
-      USER_DB_URL: ${USER_DB_URL}
-      USER_DB_USERNAME: ${USER_DB_USERNAME}
-      USER_DB_PASSWORD: ${USER_DB_PASSWORD}
+      # Defaults for local Postgres on the host (Docker Desktop: host.docker.internal). Override in `.env`.
+      USER_DB_URL: ${USER_DB_URL:-jdbc:postgresql://host.docker.internal:5437/userdb}
+      USER_DB_USERNAME: ${USER_DB_USERNAME:-ticketing}
+      USER_DB_PASSWORD: ${USER_DB_PASSWORD:-ticketing}
       INTERNAL_API_KEY: ${INTERNAL_API_KEY:-internal-demo-secret}
       ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@ticketing.local}
@@ -125,7 +128,6 @@ services:
     build:
       context: .
       dockerfile: api-gateway/Dockerfile
-    container_name: api-gateway
     depends_on:
       - event-service
       - seat-service

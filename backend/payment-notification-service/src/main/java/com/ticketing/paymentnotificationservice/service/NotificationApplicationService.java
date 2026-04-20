@@ -44,7 +44,9 @@ public class NotificationApplicationService {
         boolean anyDispatch = needEmail || needSms;
 
         String channel;
-        if (needEmail && needSms) {
+        if (!anyDispatch) {
+            channel = "NONE";
+        } else if (needEmail && needSms) {
             channel = "EMAIL+SMS";
         } else if (needSms) {
             channel = "SMS";

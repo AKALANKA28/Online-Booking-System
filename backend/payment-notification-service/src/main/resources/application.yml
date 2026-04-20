@@ -7,9 +7,9 @@ spring:
   application:
     name: payment-notification-service
   datasource:
-    url: ${PAYMENT_DB_URL:jdbc:postgresql://ep-morning-meadow-a8vv6di9-pooler.eastus2.azure.neon.tech/paymentdb?&sslmode=require&channelBinding=require}
-    username: ${PAYMENT_DB_USERNAME:neondb_owner}
-    password: ${PAYMENT_DB_PASSWORD:npg_cd8jbG0HYQnq}
+    url: ${PAYMENT_DB_URL:jdbc:postgresql://localhost:5436/paymentdb}
+    username: ${PAYMENT_DB_USERNAME:ticketing}
+    password: ${PAYMENT_DB_PASSWORD:ticketing}
   jpa:
     hibernate:
       ddl-auto: update
@@ -18,12 +18,10 @@ spring:
       hibernate:
         format_sql: true
   rabbitmq:
-    addresses: ${SPRING_RABBITMQ_ADDRESSES:amqps://jpwpeqpo:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju@yak.lmq.cloudamqp.com/jpwpeqpo}
-    username: ${SPRING_RABBITMQ_USERNAME:jpwpeqpo}
-    password: ${SPRING_RABBITMQ_PASSWORD:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju}
-    virtual-host: ${SPRING_RABBITMQ_VHOST:jpwpeqpo}
-    ssl:
-      enabled: ${SPRING_RABBITMQ_SSL_ENABLED:false}
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:guest}
+    password: ${SPRING_RABBITMQ_PASSWORD:guest}
 
 app:
   rabbitmq:
@@ -32,6 +30,19 @@ app:
     failed-queue: payment.booking.failed.queue
   security:
     internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
+  integrations:
+    stripe:
+      secret-key: ${STRIPE_SECRET_KEY:}
+      webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+      currency: ${STRIPE_CURRENCY:usd}
+    sendgrid:
+      api-key: ${SENDGRID_API_KEY:}
+      from-email: ${SENDGRID_FROM_EMAIL:}
+      from-name: ${SENDGRID_FROM_NAME:Ticketing}
+    twilio:
+      account-sid: ${TWILIO_ACCOUNT_SID:}
+      auth-token: ${TWILIO_AUTH_TOKEN:}
+      from-number: ${TWILIO_FROM_NUMBER:}
 
 management:
   endpoints:

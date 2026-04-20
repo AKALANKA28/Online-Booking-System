@@ -45,12 +45,15 @@ export interface RegisterRequest {
   username: string;
   password: string;
   email: string;
+  /** E.164 recommended for Twilio SMS booking notifications */
+  phone?: string | null;
 }
 
 export interface RegisteredUserResponse {
   userId: string;
   username: string;
   email: string;
+  phone?: string | null;
   role: UserRole;
   active: boolean;
   createdAt: string;
@@ -63,6 +66,7 @@ export interface LoginResponse {
   expiresAt: string;
   userId: string;
   email: string;
+  phone?: string | null;
   role: UserRole;
 }
 

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +36,7 @@ public class UserApplicationService {
                 .username(request.username())
                 .passwordHash(passwordEncoder.encode(request.password()))
                 .email(request.email())
+                .phone(StringUtils.hasText(request.phone()) ? request.phone().trim() : null)
                 .role(UserRole.CUSTOMER)
                 .build();
 
@@ -59,6 +61,11 @@ public class UserApplicationService {
 
         if (request.password() != null && !request.password().isBlank()) {
             user.setPasswordHash(passwordEncoder.encode(request.password()));
+        }
+
+        if (request.phone() != null) {
+            String trimmed = request.phone().trim();
+            user.setPhone(trimmed.isEmpty() ? null : trimmed);
         }
 
         return UserResponse.from(userRepository.save(user));

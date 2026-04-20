@@ -33,10 +33,12 @@ public class AuthController {
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).<LoginResponse>build();
                     }
 
+                    String phone = validation.phone() != null ? validation.phone() : "";
                     String token = jwtService.generateToken(
                             validation.userId(),
                             validation.username(),
                             validation.email(),
+                            phone,
                             validation.role()
                     );
                     LoginResponse response = new LoginResponse(
@@ -45,6 +47,7 @@ public class AuthController {
                             jwtService.getExpiry(token),
                             validation.userId(),
                             validation.email(),
+                            phone,
                             validation.role()
                     );
                     return ResponseEntity.ok(response);

@@ -34,6 +34,10 @@ public class User {
     @Column(nullable = false, unique = true, length = 160)
     private String email;
 
+    /** E.164 for SMS (Twilio); optional. */
+    @Column(length = 32)
+    private String phone;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private UserRole role;
