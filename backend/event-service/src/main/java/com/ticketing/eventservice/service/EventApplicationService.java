@@ -77,6 +77,11 @@ public class EventApplicationService {
     public Event updateStatus(Long eventId, EventStatus status) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found: " + eventId));
+
+        if (event.getStatus() == status) {
+            return event;
+        }
+
         event.setStatus(status);
         Event saved = eventRepository.save(event);
         

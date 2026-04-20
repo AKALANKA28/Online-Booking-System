@@ -106,7 +106,7 @@ export default async function EventDetailPage({
       </section>
 
       <section className="shell mt-10">
-        <EventBookingExperience event={event} seats={seats} />
+        <EventBookingExperience event={event} initialSeats={seats} />
       </section>
     </div>
   );

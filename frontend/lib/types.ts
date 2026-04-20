@@ -1,6 +1,10 @@
 export type EventStatus = "DRAFT" | "PUBLISHED" | "CANCELLED";
-export type SeatStatus = "AVAILABLE" | "RESERVED" | "BOOKED";
-export type BookingStatus = "PENDING_PAYMENT" | "CONFIRMED" | "FAILED" | "CANCELLED";
+export type SeatStatus = "AVAILABLE" | "RESERVED" | "BOOKED" | "CANCELLED";
+export type BookingStatus =
+  | "PENDING_PAYMENT"
+  | "CONFIRMED"
+  | "FAILED"
+  | "CANCELLED";
 export type PaymentStatus = "SUCCESS" | "FAILED";
 export type NotificationStatus = "SENT" | "FAILED";
 export type UserRole = "ADMIN" | "CUSTOMER";

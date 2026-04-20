@@ -6,6 +6,7 @@ import {
   LoginResponse,
   NotificationLogRecord,
   PaymentRecord,
+  SeatRecord,
 } from "@/lib/types";
 
 export class ApiError extends Error {
@@ -28,7 +29,11 @@ async function parseBody(response: Response) {
   return response.text();
 }
 
-async function request<T>(path: string, options: RequestInit = {}, token?: string) {
+async function request<T>(
+  path: string,
+  options: RequestInit = {},
+  token?: string,
+) {
   const headers = new Headers(options.headers);
   if (!headers.has("Content-Type") && options.body) {
     headers.set("Content-Type", "application/json");
@@ -46,11 +51,15 @@ async function request<T>(path: string, options: RequestInit = {}, token?: strin
   const body = await parseBody(response);
 
   if (!response.ok) {
-    const message = typeof body === "string"
-      ? body || `Request failed (${response.status})`
-      : (body && typeof body === "object" && "message" in body && typeof body.message === "string"
+    const message =
+      typeof body === "string"
+        ? body || `Request failed (${response.status})`
+        : body &&
+            typeof body === "object" &&
+            "message" in body &&
+            typeof body.message === "string"
           ? body.message
-          : `Request failed (${response.status})`);
+          : `Request failed (${response.status})`;
 
     throw new ApiError(message, response.status, body);
   }
@@ -66,14 +75,20 @@ export function login(payload: LoginRequest) {
 }
 
 export function getDemoUsers() {
-  return request<Array<{ username: string; userId: string; email: string; role: string }>>("/auth/users");
+  return request<
+    Array<{ username: string; userId: string; email: string; role: string }>
+  >("/auth/users");
 }
 
 export function createBooking(payload: CreateBookingRequest, token: string) {
-  return request<BookingRecord>("/api/bookings", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  }, token);
+  return request<BookingRecord>(
+    "/api/bookings",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+    token,
+  );
 }
 
 export function getMyBookings(token: string) {
@@ -85,12 +100,43 @@ export function getPayment(paymentReference: string, token: string) {
 }
 
 export function getNotifications(bookingReference: string, token: string) {
-  return request<NotificationLogRecord[]>(`/api/notifications/bookings/${bookingReference}`, {}, token);
+  return request<NotificationLogRecord[]>(
+    `/api/notifications/bookings/${bookingReference}`,
+    {},
+    token,
+  );
 }
 
 export function createEvent(payload: Partial<EventRecord>, token: string) {
-  return request<EventRecord>("/api/events", {
-    method: "POST",
-    body: JSON.stringify(payload),
-  }, token);
+  return request<EventRecord>(
+    "/api/events",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+    token,
+  );
+}
+
+export function getEvents() {
+  return request<EventRecord[]>("/api/events");
+}
+
+export function updateEventStatus(
+  eventId: number,
+  status: EventRecord["status"],
+  token: string,
+) {
+  return request<EventRecord>(
+    `/api/events/${eventId}/status`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ status }),
+    },
+    token,
+  );
+}
+
+export function getSeatsByEvent(eventId: number) {
+  return request<SeatRecord[]>(`/api/seats/events/${eventId}`);
 }

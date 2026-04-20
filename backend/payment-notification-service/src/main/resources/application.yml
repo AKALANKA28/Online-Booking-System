@@ -7,9 +7,9 @@ spring:
   application:
     name: payment-notification-service
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://ep-morning-meadow-a8vv6di9-pooler.eastus2.azure.neon.tech/paymentdb?&sslmode=require&channelBinding=require}
-    username: ${SPRING_DATASOURCE_USERNAME:neondb_owner}
-    password: ${SPRING_DATASOURCE_PASSWORD:npg_cd8jbG0HYQnq}
+    url: ${PAYMENT_DB_URL:jdbc:postgresql://ep-morning-meadow-a8vv6di9-pooler.eastus2.azure.neon.tech/paymentdb?&sslmode=require&channelBinding=require}
+    username: ${PAYMENT_DB_USERNAME:neondb_owner}
+    password: ${PAYMENT_DB_PASSWORD:npg_cd8jbG0HYQnq}
   jpa:
     hibernate:
       ddl-auto: update

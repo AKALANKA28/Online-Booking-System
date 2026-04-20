@@ -7,9 +7,9 @@ spring:
   application:
     name: event-service
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://ep-morning-meadow-a8vv6di9-pooler.eastus2.azure.neon.tech/eventdb?sslmode=require&channelBinding=require}
-    username: ${SPRING_DATASOURCE_USERNAME:neondb_owner}
-    password: ${SPRING_DATASOURCE_PASSWORD:npg_cd8jbG0HYQnq}
+    url: ${EVENT_DB_URL:jdbc:postgresql://ep-morning-meadow-a8vv6di9-pooler.eastus2.azure.neon.tech/eventdb?sslmode=require&channelBinding=require}
+    username: ${EVENT_DB_USERNAME:neondb_owner}
+    password: ${EVENT_DB_PASSWORD:npg_cd8jbG0HYQnq}
   jpa:
     hibernate:
       ddl-auto: update
