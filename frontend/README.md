@@ -1,101 +1,69 @@
 # Pulse Tickets Frontend
 
-A modern, responsive web UI for the **Smart Event Ticketing and Reservation Platform** backend.
+A modern, responsive ticketing platform for discovering and booking live events.
 
-## Why this stack
+## Features
 
-### Next.js App Router
-This project uses **Next.js + TypeScript** because the product has two very different UI needs:
-- **discovery pages** benefit from server-rendered content and clean routing
-- **seat selection, authentication, bookings, and organizer actions** require rich client-side interactivity
+- Interactive seat selection with real-time availability
+- Secure checkout with multiple payment methods
+- User authentication and booking history
+- Admin dashboard for event management
+- Responsive design for all devices
 
-That makes the App Router a strong fit for a ticketing experience.
+## Tech Stack
 
-### Next.js proxy route
-Your Spring gateway does not currently expose browser CORS configuration. To keep local development clean, the frontend uses a **same-origin Next.js proxy** under `/api/proxy/...`, which forwards requests to the Spring API gateway.
+- Next.js 16 with App Router
+- TypeScript
+- Tailwind CSS
+- Custom component architecture
 
-This means the browser talks only to the Next.js app, while Next.js forwards requests to `http://localhost:8080` (or whatever you put in `API_BASE_URL`).
+## Getting Started
 
-### Tailwind CSS with a custom design system
-Tailwind is used only as a utility layer. There is **no prebuilt component kit** here, because those often produce the generic AI-looking UI you explicitly wanted to avoid.
+### Prerequisites
 
-The visual language is intentionally more editorial and product-led:
-- warm paper background instead of generic dark dashboard chrome
-- strong typographic hierarchy
-- asymmetric hero composition
-- premium seat-selection layout with sticky purchase rail
-- restrained accents instead of random rainbow gradients
+- Node.js 18+
+- The backend API running (see backend README)
 
-## Main pages
+### Installation
 
-- `/` - discovery-led homepage
-- `/events` - search and browse
-- `/events/[id]` - event detail + seat selection + checkout rail
-- `/login` - JWT login against Spring gateway demo users
-- `/bookings` - booking history with payment and notification trail
-- `/admin/events` - admin event publishing UI
-
-## Works with your existing backend
-
-Frontend endpoint mapping:
-- `POST /auth/login`
-- `GET /auth/users`
-- `GET /api/events`
-- `GET /api/events/{id}`
-- `GET /api/seats/events/{eventId}`
-- `POST /api/bookings`
-- `GET /api/bookings/me`
-- `GET /api/payments/{paymentReference}`
-- `GET /api/notifications/bookings/{bookingReference}`
-- `POST /api/events` (admin)
-
-## Local setup
-
-### 1. Install dependencies
 ```bash
 npm install
 ```
 
-### 2. Copy env file
-```bash
-cp .env.example .env.local
-```
+### Environment Variables
 
-### 3. Set backend base URL
-By default:
-```env
-API_BASE_URL=http://localhost:8080
-```
+Create a `.env.local` file based on `.env.example` and set `API_BASE_URL` to your backend endpoint.
 
-### 4. Start the frontend
+### Development
+
 ```bash
 npm run dev
 ```
 
-Frontend runs at:
-```text
-http://localhost:3000
+Visit `http://localhost:3000`.
+
+### Build
+
+```bash
+npm run build
+npm start
 ```
 
-## Backend assumptions
+## Project Structure
 
-This UI assumes:
-- Spring API Gateway is running on `localhost:8080`
-- your event, seat, booking, and payment-notification services are live behind it
-- RabbitMQ is running if you want event-created seat generation and notification flow to behave fully
+- `app/` - Next.js pages (app router)
+- `components/` - reusable UI components
+- `lib/` - utility functions and API clients
 
-## Demo credentials
+## Pages
 
-- `admin / admin123`
-- `customer / customer123`
-- `user2 / user2123`
+- `/` - Homepage with featured events
+- `/events` - Browse and search events
+- `/events/[id]` - Event details and seat selection
+- `/login` - Sign in / register
+- `/bookings` - My tickets and booking history
+- `/admin/events` - Event management (admin only)
 
-## Booking testing
+## Payment Integration
 
-On the event detail page:
-- use card token `4242424242424242` for a success path
-- use a token ending in `0000` for a simulated payment failure path
-
-## Fallback behavior
-
-If your backend is not reachable, the homepage and event catalog fall back to curated mock events so you can still present the UI during design review. Once the backend is up, the live API data takes over.
+This demo uses a simple card token input. In production, integrate with a PCI-compliant payment processor.

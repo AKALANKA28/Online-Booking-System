@@ -31,10 +31,10 @@ export function SiteHeader() {
             <span className="grid h-11 w-11 place-items-center rounded-2xl bg-ink font-display text-lg font-bold text-white">
               PT
             </span>
-            <div>
-              <p className="font-display text-lg font-bold text-ink">Pulse Tickets</p>
-              <p className="text-xs text-smoke">Live experiences, designed cleanly.</p>
-            </div>
+             <div>
+               <p className="font-display text-lg font-bold text-ink">Pulse Tickets</p>
+               <p className="text-xs text-smoke">Your ticket to unforgettable moments.</p>
+             </div>
           </Link>
         </div>
 

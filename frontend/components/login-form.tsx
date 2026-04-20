@@ -34,13 +34,14 @@ export function LoginForm() {
       signIn(response);
       router.push(searchParams.get("next") || "/bookings");
       router.refresh();
-    } catch (caught) {
-      if (caught instanceof ApiError) {
-        setError(caught.message || "Authentication failed.");
-      } else {
-        setError(
-          "Could not reach the gateway. Make sure the Spring services are running.",
-        );
+      } catch (caught) {
+        if (caught instanceof ApiError) {
+          setError(caught.message || "Authentication failed.");
+        } else {
+          setError(
+            "Could not connect to the server. Please try again later.",
+          );
+        }
       }
     } finally {
       setLoading(false);
@@ -61,19 +62,9 @@ export function LoginForm() {
           Sign in with user-service credentials.
         </h2>
         <p className="mt-4 max-w-lg text-sm leading-7 text-white/80">
-          Login now validates credentials against the user-service database
-          through the gateway, then stores a JWT for bookings, admin actions,
-          payments, and notification history.
+          Sign in to access your bookings, manage your account, and get personalized event updates.
         </p>
-        <div className="mt-8 rounded-3xl border border-white/15 bg-white/10 px-5 py-4 text-sm text-white/80">
-          <p className="font-semibold text-white">
-            Admin account is auto-seeded in user-service.
-          </p>
-          <p className="mt-2">
-            Defaults come from backend env vars: ADMIN_USERNAME / ADMIN_PASSWORD
-            / ADMIN_EMAIL.
-          </p>
-        </div>
+
       </div>
 
       <form onSubmit={onSubmit} className="surface p-8">
@@ -83,8 +74,8 @@ export function LoginForm() {
         </h3>
         <p className="mt-3 text-sm leading-6 text-smoke">
           {mode === "signin"
-            ? "Use your existing username and password from user-service."
-            : "Register a new customer account in user-service and sign in immediately."}
+            ? "Enter your username and password to sign in."
+            : "Create a new account to start booking events."}
         </p>
 
         <div className="mt-6 grid grid-cols-2 gap-2 rounded-full border border-line bg-cloud p-1">
@@ -179,12 +170,7 @@ export function LoginForm() {
             Continue with OAuth
           </button>
 
-          {!oauthLoginUrl && (
-            <p className="text-xs leading-6 text-smoke">
-              OAuth can be enabled by setting NEXT_PUBLIC_OAUTH_LOGIN_URL. Neon
-              console OAuth secures Neon access, not end-user app sign-in.
-            </p>
-          )}
+
 
           {success && (
             <p className="rounded-2xl border border-pine/20 bg-pineSoft px-4 py-3 text-sm font-medium text-pine">

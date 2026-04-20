@@ -5,14 +5,12 @@ export default function LoginPage() {
   return (
     <div className="shell py-10 sm:py-14">
       <div className="mb-8 max-w-3xl">
-        <p className="eyebrow">Authentication</p>
+        <p className="eyebrow">Welcome back</p>
         <h1 className="mt-2 font-display text-5xl font-bold text-ink">
-          Sign in with real user-service accounts.
+          Sign in to your account.
         </h1>
         <p className="mt-4 text-base leading-8 text-smoke">
-          Register and login now connect to user-service backed by PostgreSQL,
-          while the API gateway still issues and validates JWTs across the
-          platform.
+          Access your bookings, manage your account, and get personalized event updates.
         </p>
       </div>
       <Suspense

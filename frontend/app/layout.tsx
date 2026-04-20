@@ -17,11 +17,11 @@ const space = Space_Grotesk({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Pulse Tickets",
-  description:
-    "Modern ticketing frontend for the Smart Event Ticketing and Reservation Platform.",
-};
+ export const metadata: Metadata = {
+   title: "Pulse Tickets",
+   description:
+     "Pulse Tickets - Book live events, concerts, theater, and more. Secure your seats with ease.",
+ };
 
 export default function RootLayout({
   children,

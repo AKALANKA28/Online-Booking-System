@@ -15,19 +15,19 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Notfoundexception.class)
-    public ResponseEntity<Map<String, Object>> handleNotFound(ChangeSetPersister.NotFoundException ex) {
-        return build(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
-
-    @ExceptionHandler(ConflictException.class)
-    public ResponseEntity<Map<String, Object>> handleConflict(ConflictException ex) {
-        return build(HttpStatus.CONFLICT, ex.getMessage());
-    }
-
-    @ExceptionHandler(Forbiddenexception.class)
-    public ResponseEntity<Map<String, Object>> handleForbidden(Forbiddenexception ex) {
-        return build(HttpStatus.FORBIDDEN, ex.getMessage());
+    @ExceptionHandler({Notfoundexception.class, ConflictException.class, Forbiddenexception.class})
+    public ResponseEntity<Map<String, Object>> handleStandardExceptions(Exception ex) {
+        HttpStatus status;
+        if (ex instanceof ChangeSetPersister.NotFoundException) {
+            status = HttpStatus.NOT_FOUND;
+        } else if (ex instanceof ConflictException) {
+            status = HttpStatus.CONFLICT;
+        } else if (ex instanceof Forbiddenexception) {
+            status = HttpStatus.FORBIDDEN;
+        } else {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return build(status, ex.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

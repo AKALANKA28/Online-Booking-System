@@ -60,8 +60,8 @@ export function BookingsDashboard({ events }: { events: EventRecord[] }) {
   if (!user) {
     return (
       <div className="surface p-8">
-        <h3 className="font-display text-2xl font-bold text-ink">Sign in to view your bookings</h3>
-        <p className="mt-3 max-w-xl text-sm leading-6 text-smoke">This page calls <span className="font-semibold text-ink">/api/bookings/me</span> and then lazily loads payment plus notification history for each booking.</p>
+        <h3 className="font-display text-2xl font-bold text-ink">Sign in to see your tickets</h3>
+        <p className="mt-3 max-w-xl text-sm leading-6 text-smoke">Sign in to access your bookings, payment history, and event details.</p>
         <Link href="/login?next=/bookings" className="mt-6 inline-flex rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white">Go to login</Link>
       </div>
     );
@@ -75,7 +75,7 @@ export function BookingsDashboard({ events }: { events: EventRecord[] }) {
       {!loading && bookings.length === 0 && (
         <div className="surface p-10 text-center">
           <h3 className="font-display text-2xl font-bold text-ink">No tickets yet</h3>
-          <p className="mt-3 text-sm leading-6 text-smoke">Book a seat from the event detail page and it will appear here with payment and notification history.</p>
+          <p className="mt-3 text-sm leading-6 text-smoke">Get started by booking an event. Your tickets will appear here.</p>
           <Link href="/events" className="mt-6 inline-flex rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white">Browse events</Link>
         </div>
       )}
