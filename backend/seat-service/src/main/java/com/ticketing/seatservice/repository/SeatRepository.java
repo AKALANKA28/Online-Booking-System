@@ -19,4 +19,6 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     List<Seat> findByLockedByBookingReference(String bookingReference);
 
     List<Seat> findByStatusAndLockedUntilBefore(SeatStatus status, OffsetDateTime time);
+
+    List<Seat> findByEventId(Long eventId);
 }
