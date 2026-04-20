@@ -7,11 +7,12 @@ export default function LoginPage() {
       <div className="mb-8 max-w-3xl">
         <p className="eyebrow">Authentication</p>
         <h1 className="mt-2 font-display text-5xl font-bold text-ink">
-          Sign in with the Spring gateway’s demo users.
+          Sign in with real user-service accounts.
         </h1>
         <p className="mt-4 text-base leading-8 text-smoke">
-          This page is intentionally simple and trustworthy so it supports the
-          polished experience instead of feeling like a hacked-on admin screen.
+          Register and login now connect to user-service backed by PostgreSQL,
+          while the API gateway still issues and validates JWTs across the
+          platform.
         </p>
       </div>
       <Suspense

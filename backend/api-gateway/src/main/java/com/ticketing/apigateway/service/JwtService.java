@@ -24,15 +24,15 @@ public class JwtService {
         this.tokenValidityHours = tokenValidityHours;
     }
 
-    public String generateToken(DemoUserService.DemoUser user) {
+    public String generateToken(String userId, String username, String email, String role) {
         OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         OffsetDateTime expiry = now.plusHours(tokenValidityHours);
 
         return Jwts.builder()
-                .subject(user.username())
-                .claim("userId", user.userId())
-                .claim("email", user.email())
-                .claim("role", user.role())
+                .subject(username)
+                .claim("userId", userId)
+                .claim("email", email)
+                .claim("role", role)
                 .issuedAt(Date.from(now.toInstant()))
                 .expiration(Date.from(expiry.toInstant()))
                 .signWith(secretKey)

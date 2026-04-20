@@ -1,6 +1,10 @@
 export type EventStatus = "DRAFT" | "PUBLISHED" | "CANCELLED";
-export type SeatStatus = "AVAILABLE" | "RESERVED" | "BOOKED";
-export type BookingStatus = "PENDING_PAYMENT" | "CONFIRMED" | "FAILED" | "CANCELLED";
+export type SeatStatus = "AVAILABLE" | "RESERVED" | "BOOKED" | "CANCELLED";
+export type BookingStatus =
+  | "PENDING_PAYMENT"
+  | "CONFIRMED"
+  | "FAILED"
+  | "CANCELLED";
 export type PaymentStatus = "SUCCESS" | "FAILED";
 export type NotificationStatus = "SENT" | "FAILED";
 export type UserRole = "ADMIN" | "CUSTOMER";
@@ -35,6 +39,22 @@ export interface SeatRecord {
 export interface LoginRequest {
   username: string;
   password: string;
+}
+
+export interface RegisterRequest {
+  username: string;
+  password: string;
+  email: string;
+}
+
+export interface RegisteredUserResponse {
+  userId: string;
+  username: string;
+  email: string;
+  role: UserRole;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface LoginResponse {

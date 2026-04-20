@@ -5,6 +5,7 @@
 For a student-friendly deployment, use **Azure Container Apps**.
 
 Why:
+
 - simple container deployment flow
 - public endpoint support
 - easy secret and environment variable management
@@ -20,13 +21,17 @@ Why:
 ## Environment variables
 
 Set these per service:
-- `SPRING_DATASOURCE_URL`
-- `SPRING_DATASOURCE_USERNAME`
-- `SPRING_DATASOURCE_PASSWORD`
+
+- `EVENT_DB_URL`, `EVENT_DB_USERNAME`, `EVENT_DB_PASSWORD` (event-service)
+- `SEAT_DB_URL`, `SEAT_DB_USERNAME`, `SEAT_DB_PASSWORD` (seat-service)
+- `BOOKING_DB_URL`, `BOOKING_DB_USERNAME`, `BOOKING_DB_PASSWORD` (booking-service)
+- `PAYMENT_DB_URL`, `PAYMENT_DB_USERNAME`, `PAYMENT_DB_PASSWORD` (payment-notification-service)
 - `SPRING_RABBITMQ_HOST`
 - `SPRING_RABBITMQ_PORT`
 - `INTERNAL_API_KEY`
 - `JWT_SECRET`
+
+Avoid setting one global `SPRING_DATASOURCE_URL` while running all services on the same host. It can force multiple services to write tables into the same database.
 
 ## Secure deployment tips
 

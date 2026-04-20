@@ -19,6 +19,21 @@ public class EventApplicationService {
     private final EventRepository eventRepository;
     private final EventMessagePublisher eventMessagePublisher;
 
+    // ... existing methods ...
+
+    @Transactional
+    public Event cancel(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event not found: " + eventId));
+        if (event.getStatus() == EventStatus.CANCELLED) {
+            throw new IllegalArgumentException("Event is already cancelled");
+        }
+        event.setStatus(EventStatus.CANCELLED);
+        Event saved = eventRepository.save(event);
+        eventMessagePublisher.publishEventCancelled(saved);
+        return saved;
+    }
+
     @Transactional(readOnly = true)
     public List<Event> findAll() {
         return eventRepository.findAll();
@@ -59,10 +74,33 @@ public class EventApplicationService {
     }
 
     @Transactional
+    public void delete(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event not found: " + eventId));
+
+        // Ensure downstream services release or cancel related state before the event disappears.
+        if (event.getStatus() != EventStatus.CANCELLED) {
+            eventMessagePublisher.publishEventCancelled(event);
+        }
+
+        eventRepository.delete(event);
+    }
+
+    @Transactional
     public Event updateStatus(Long eventId, EventStatus status) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found: " + eventId));
+
+        if (event.getStatus() == status) {
+            return event;
+        }
+
         event.setStatus(status);
-        return eventRepository.save(event);
+        Event saved = eventRepository.save(event);
+        
+        if (status == EventStatus.CANCELLED) {
+            eventMessagePublisher.publishEventCancelled(saved);
+        }
+        return saved;
     }
 }
