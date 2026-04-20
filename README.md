@@ -8,7 +8,7 @@ A Spring Boot microservices project for a global event ticketing platform. The s
 - **Event Service** - event and venue schedule management
 - **Seat Service** - seat inventory, temporary reservation, booking confirmation, expiry handling
 - **Booking Service** - booking orchestration and ticket creation
-- **Payment Notification Service** - payment processing simulation and asynchronous notification logging
+- **Payment Notification Service** - payment (built-in simulator or **Stripe test mode**) and booking notifications (audit log plus optional **SendGrid** email and **Twilio** SMS); see `docs/INTEGRATIONS.md`
 
 ## Why this project justifies microservices
 
@@ -115,15 +115,17 @@ curl -X POST http://localhost:8080/api/bookings \
   }'
 ```
 
-A card token ending in `0000` or the literal value `FAIL` will simulate a payment failure.
+The gateway puts each demo user’s **phone** (E.164) on the booking from the JWT as **`X-User-Phone`** — used for **Twilio SMS** when Twilio env vars are set (see `docs/INTEGRATIONS.md`). **Log in again** after upgrading so tokens include the `phone` claim.
+
+With the **simulator** (no `STRIPE_SECRET_KEY`), a `cardToken` ending in `0000` or the literal `FAIL` simulates decline. With **Stripe** enabled, the same tokens map to a Stripe decline test card; otherwise use Stripe test cards or a `pm_…` id.
 
 ## Default demo users
 
-| Username | Password | Role |
-|---|---|---|
-| admin | admin123 | ADMIN |
-| customer | customer123 | CUSTOMER |
-| user2 | user2123 | CUSTOMER |
+| Username | Password | Role | Phone (E.164) |
+|---|---|---|---|
+| admin | admin123 | ADMIN | +15555550101 |
+| customer | customer123 | CUSTOMER | +15555550102 |
+| user2 | user2123 | CUSTOMER | +15555550103 |
 
 ## Swagger / OpenAPI
 
@@ -152,9 +154,14 @@ Each microservice exposes its own OpenAPI docs.
 - SonarCloud configuration placeholder
 - Snyk-friendly structure and dependency separation
 
+## Optional integrations (Stripe, SendGrid, Twilio)
+
+Configure environment variables on **payment-notification-service** (see `docker-compose.yml`). Full checklist, Postman flow, and Azure deployment notes: **[docs/INTEGRATIONS.md](docs/INTEGRATIONS.md)**.
+
 ## Repository map
 
 - `docs/ARCHITECTURE.md` - architecture and sequence diagrams
+- `docs/INTEGRATIONS.md` - Stripe, SendGrid, Twilio env vars, Postman testing, deployment
 - `docs/CODE_PLAN.md` - implementation plan and service breakdown
 - `docs/DEPLOYMENT.md` - Azure Container Apps deployment approach
 - `.github/workflows/` - CI/CD pipeline templates
