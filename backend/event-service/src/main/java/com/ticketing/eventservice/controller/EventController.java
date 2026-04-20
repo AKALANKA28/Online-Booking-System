@@ -66,4 +66,13 @@ public class EventController {
         GatewaySecurityGuards.requireAdmin(role);
         return EventResponse.from(eventApplicationService.updateStatus(eventId, request.status()));
     }
+
+    @DeleteMapping("/{eventId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete an event (ADMIN only)")
+    public void delete(@RequestHeader(value = "X-User-Role", required = false) String role,
+                       @PathVariable Long eventId) {
+        GatewaySecurityGuards.requireAdmin(role);
+        eventApplicationService.delete(eventId);
+    }
 }

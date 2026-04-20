@@ -302,7 +302,7 @@ export function EventBookingExperience({
 
         <div className="surface p-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid w-full grid-cols-3 gap-3 sm:max-w-sm">
               {(["ALL", "VIP", "REGULAR"] as const).map((item) => (
                 <button
                   key={item}
@@ -310,8 +310,8 @@ export function EventBookingExperience({
                   onClick={() => setCategory(item)}
                   className={
                     category === item
-                      ? "rounded-full bg-ink px-4 py-3 text-sm font-semibold text-white"
-                      : "rounded-full border border-line bg-white px-4 py-3 text-sm font-semibold text-ink"
+                      ? "w-full whitespace-nowrap rounded-full bg-ink px-4 py-3 text-center text-sm font-semibold text-white"
+                      : "w-full whitespace-nowrap rounded-full border border-line bg-white px-4 py-3 text-center text-sm font-semibold text-ink"
                   }
                 >
                   {item === "ALL" ? "All tickets" : item}
@@ -414,6 +414,7 @@ export function EventBookingExperience({
                           type="button"
                           onClick={() => toggleSeat(seat)}
                           disabled={disabled}
+                          suppressHydrationWarning
                           className={`grid h-12 w-12 place-items-center rounded-2xl border text-xs font-bold transition ${appearance} ${disabled ? "cursor-not-allowed opacity-70" : ""}`}
                           title={`${seat.seatNumber} · ${seat.category} · ${seat.status} · ${formatMoney(seat.price)}`}
                         >
@@ -495,6 +496,7 @@ export function EventBookingExperience({
                 onChange={(eventSelect) =>
                   setPaymentMethod(eventSelect.target.value)
                 }
+                suppressHydrationWarning
                 className="mt-3 w-full rounded-2xl border border-line bg-white px-4 py-4 text-sm outline-none focus:border-cobalt"
               >
                 <option value="CARD">Card</option>
@@ -508,6 +510,7 @@ export function EventBookingExperience({
               <input
                 value={cardToken}
                 onChange={(eventInput) => setCardToken(eventInput.target.value)}
+                suppressHydrationWarning
                 className="mt-3 w-full rounded-2xl border border-line bg-white px-4 py-4 text-sm outline-none focus:border-cobalt"
               />
               <p className="mt-2 text-xs text-smoke">
@@ -523,6 +526,7 @@ export function EventBookingExperience({
               type="button"
               onClick={reserveSeats}
               disabled={submitting}
+              suppressHydrationWarning
               className="w-full rounded-full bg-ink px-5 py-4 text-sm font-semibold text-white transition hover:bg-cobalt disabled:cursor-not-allowed disabled:opacity-60"
             >
               {submitting

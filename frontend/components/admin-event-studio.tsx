@@ -7,6 +7,7 @@ import { StatusPill } from "@/components/status-pill";
 import {
   ApiError,
   createEvent,
+  deleteEvent,
   getEvents,
   updateEventStatus,
 } from "@/lib/client-api";
@@ -71,7 +72,10 @@ export function AdminEventStudio() {
   const [created, setCreated] = useState<EventRecord | null>(null);
   const [events, setEvents] = useState<EventRecord[]>([]);
   const [eventsLoading, setEventsLoading] = useState(false);
-  const [actionEventId, setActionEventId] = useState<number | null>(null);
+  const [action, setAction] = useState<{
+    eventId: number;
+    kind: "cancel" | "delete";
+  } | null>(null);
   const [managementError, setManagementError] = useState<string | null>(null);
 
   const sortedEvents = useMemo(
@@ -153,7 +157,7 @@ export function AdminEventStudio() {
   async function cancelEvent(eventId: number) {
     if (!user || user.role !== "ADMIN") return;
 
-    setActionEventId(eventId);
+    setAction({ eventId, kind: "cancel" });
     setManagementError(null);
 
     try {
@@ -178,7 +182,38 @@ export function AdminEventStudio() {
         setManagementError("Could not cancel the selected event.");
       }
     } finally {
-      setActionEventId(null);
+      setAction(null);
+    }
+  }
+
+  async function deleteManagedEvent(eventId: number) {
+    if (!user || user.role !== "ADMIN") return;
+
+    const confirmed = window.confirm(
+      "Delete this event permanently? This cannot be undone.",
+    );
+    if (!confirmed) return;
+
+    setAction({ eventId, kind: "delete" });
+    setManagementError(null);
+
+    try {
+      await deleteEvent(eventId, user.accessToken);
+      setEvents((current) => current.filter((item) => item.id !== eventId));
+      setCreated((current) =>
+        current && current.id === eventId ? null : current,
+      );
+    } catch (caught) {
+      if (caught instanceof ApiError) {
+        const details = extractValidationMessages(caught.payload);
+        setManagementError(
+          details.length > 0 ? details.join(" • ") : caught.message,
+        );
+      } else {
+        setManagementError("Could not delete the selected event.");
+      }
+    } finally {
+      setAction(null);
     }
   }
 
@@ -410,11 +445,12 @@ export function AdminEventStudio() {
         <div className="surface p-6">
           <p className="eyebrow">Event management</p>
           <h4 className="mt-2 font-display text-2xl font-bold text-ink">
-            Cancel published events
+            Cancel or delete events
           </h4>
           <p className="mt-3 text-sm leading-6 text-smoke">
             Cancellation triggers asynchronous fan-out to booking and seat
-            services through RabbitMQ.
+            services through RabbitMQ. Deletion permanently removes the event
+            from event-service.
           </p>
 
           {managementError && (
@@ -427,7 +463,7 @@ export function AdminEventStudio() {
             <p className="mt-5 text-sm text-smoke">Loading events...</p>
           ) : sortedEvents.length === 0 ? (
             <p className="mt-5 text-sm text-smoke">
-              No events available for cancellation yet.
+              No events available for management yet.
             </p>
           ) : (
             <div className="mt-5 space-y-3">
@@ -461,16 +497,27 @@ export function AdminEventStudio() {
                       onClick={() => {
                         void cancelEvent(item.id);
                       }}
-                      disabled={
-                        item.status === "CANCELLED" || actionEventId === item.id
-                      }
+                      disabled={item.status === "CANCELLED" || action !== null}
                       className="rounded-full bg-ember px-4 py-2 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {item.status === "CANCELLED"
                         ? "Already cancelled"
-                        : actionEventId === item.id
+                        : action?.eventId === item.id &&
+                            action.kind === "cancel"
                           ? "Cancelling..."
                           : "Cancel event"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        void deleteManagedEvent(item.id);
+                      }}
+                      disabled={action !== null}
+                      className="rounded-full border border-ember px-4 py-2 text-xs font-semibold text-ember disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {action?.eventId === item.id && action.kind === "delete"
+                        ? "Deleting..."
+                        : "Delete event"}
                     </button>
                   </div>
                 </div>

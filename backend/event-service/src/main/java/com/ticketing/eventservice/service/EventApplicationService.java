@@ -74,6 +74,19 @@ public class EventApplicationService {
     }
 
     @Transactional
+    public void delete(Long eventId) {
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException("Event not found: " + eventId));
+
+        // Ensure downstream services release or cancel related state before the event disappears.
+        if (event.getStatus() != EventStatus.CANCELLED) {
+            eventMessagePublisher.publishEventCancelled(event);
+        }
+
+        eventRepository.delete(event);
+    }
+
+    @Transactional
     public Event updateStatus(Long eventId, EventStatus status) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found: " + eventId));

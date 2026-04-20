@@ -41,6 +41,22 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface RegisterRequest {
+  username: string;
+  password: string;
+  email: string;
+}
+
+export interface RegisteredUserResponse {
+  userId: string;
+  username: string;
+  email: string;
+  role: UserRole;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface LoginResponse {
   accessToken: string;
   tokenType: string;

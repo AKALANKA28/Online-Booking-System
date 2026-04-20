@@ -34,6 +34,11 @@ app:
   security:
     jwt-secret: ${JWT_SECRET:demo-demo-demo-demo-demo-demo-demo-12345}
     token-validity-hours: 8
+    internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
+
+services:
+  user:
+    base-url: ${USER_SERVICE_URL:http://localhost:8085}
 
 management:
   endpoints:

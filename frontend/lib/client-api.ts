@@ -6,6 +6,8 @@ import {
   LoginResponse,
   NotificationLogRecord,
   PaymentRecord,
+  RegisterRequest,
+  RegisteredUserResponse,
   SeatRecord,
 } from "@/lib/types";
 
@@ -74,10 +76,11 @@ export function login(payload: LoginRequest) {
   });
 }
 
-export function getDemoUsers() {
-  return request<
-    Array<{ username: string; userId: string; email: string; role: string }>
-  >("/auth/users");
+export function registerUser(payload: RegisterRequest) {
+  return request<RegisteredUserResponse>("/api/users/register", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 }
 
 export function createBooking(payload: CreateBookingRequest, token: string) {
@@ -132,6 +135,16 @@ export function updateEventStatus(
     {
       method: "PUT",
       body: JSON.stringify({ status }),
+    },
+    token,
+  );
+}
+
+export function deleteEvent(eventId: number, token: string) {
+  return request<void>(
+    `/api/events/${eventId}`,
+    {
+      method: "DELETE",
     },
     token,
   );
