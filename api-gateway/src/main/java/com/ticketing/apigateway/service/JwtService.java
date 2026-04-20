@@ -32,6 +32,7 @@ public class JwtService {
                 .subject(user.username())
                 .claim("userId", user.userId())
                 .claim("email", user.email())
+                .claim("phone", user.phone())
                 .claim("role", user.role())
                 .issuedAt(Date.from(now.toInstant()))
                 .expiration(Date.from(expiry.toInstant()))

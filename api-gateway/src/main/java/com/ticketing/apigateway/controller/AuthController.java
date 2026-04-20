@@ -39,6 +39,7 @@ public class AuthController {
                             jwtService.getExpiry(token),
                             user.userId(),
                             user.email(),
+                            user.phone(),
                             user.role()
                     );
                     return ResponseEntity.ok(response);

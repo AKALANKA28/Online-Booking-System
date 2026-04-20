@@ -36,9 +36,12 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         String token = authHeader.substring(7);
         try {
             Claims claims = jwtService.parse(token);
+            Object phoneClaim = claims.get("phone");
+            String phoneHeader = phoneClaim != null ? String.valueOf(phoneClaim) : "";
             ServerHttpRequest mutated = request.mutate()
                     .header("X-User-Id", String.valueOf(claims.get("userId")))
                     .header("X-User-Email", String.valueOf(claims.get("email")))
+                    .header("X-User-Phone", phoneHeader)
                     .header("X-User-Role", String.valueOf(claims.get("role")))
                     .build();
             return chain.filter(exchange.mutate().request(mutated).build());
@@ -53,7 +56,8 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         HttpMethod method = request.getMethod();
 
         if (path.startsWith("/auth/") || path.startsWith("/actuator/") || path.startsWith("/swagger-ui")
-                || path.startsWith("/v3/api-docs") || path.startsWith("/webjars")) {
+                || path.startsWith("/v3/api-docs") || path.startsWith("/webjars")
+                || path.startsWith("/webhooks/")) {
             return true;
         }
 

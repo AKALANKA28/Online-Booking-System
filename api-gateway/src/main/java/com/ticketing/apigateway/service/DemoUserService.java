@@ -11,9 +11,9 @@ import java.util.Optional;
 public class DemoUserService {
 
     private final Map<String, DemoUser> users = Map.of(
-            "admin", new DemoUser("admin", "admin123", "admin-1", "admin@ticketing.local", "ADMIN"),
-            "customer", new DemoUser("customer", "customer123", "user-1", "customer@ticketing.local", "CUSTOMER"),
-            "user2", new DemoUser("user2", "user2123", "user-2", "user2@ticketing.local", "CUSTOMER")
+            "admin", new DemoUser("admin", "admin123", "admin-1", "sudarshan27922@gmail.com", "+94764287713", "ADMIN"),
+            "customer", new DemoUser("customer", "customer123", "user-1", "sudarshan27922@gmail.com", "+94764287713", "CUSTOMER"),
+            "user2", new DemoUser("user2", "user2123", "user-2", "sudarshan27922@gmail.com", "+94764287713", "CUSTOMER")
     );
 
     public Optional<DemoUser> authenticate(String username, String password) {
@@ -26,10 +26,10 @@ public class DemoUserService {
 
     public List<UserResponse> getUsers() {
         return users.values().stream()
-                .map(user -> new UserResponse(user.username(), user.userId(), user.email(), user.role()))
+                .map(user -> new UserResponse(user.username(), user.userId(), user.email(), user.phone(), user.role()))
                 .toList();
     }
 
-    public record DemoUser(String username, String password, String userId, String email, String role) {
+    public record DemoUser(String username, String password, String userId, String email, String phone, String role) {
     }
 }
