@@ -1,0 +1,44 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: event-service
+          uri: ${EVENT_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/events/**
+        - id: seat-service
+          uri: ${SEAT_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/seats/**
+        - id: booking-service
+          uri: ${BOOKING_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/bookings/**
+        - id: payment-service
+          uri: ${PAYMENT_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/api/payments/**,/api/notifications/**
+        - id: payment-webhooks
+          uri: ${PAYMENT_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/webhooks/**
+
+app:
+  security:
+    jwt-secret: ${JWT_SECRET:demo-demo-demo-demo-demo-demo-demo-12345}
+    token-validity-hours: 8
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
