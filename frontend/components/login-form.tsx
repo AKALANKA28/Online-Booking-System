@@ -16,7 +16,6 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { signIn } = useAuth();
-  const oauthLoginUrl = process.env.NEXT_PUBLIC_OAUTH_LOGIN_URL;
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -30,11 +29,11 @@ export function LoginForm() {
         setSuccess("Account created. Signing you in now...");
       }
 
-      const response = await login({ username, password });
-      signIn(response);
-      router.push(searchParams.get("next") || "/bookings");
-      router.refresh();
-      } catch (caught) {
+       const response = await login({ username, password });
+       signIn(response);
+       router.push(searchParams.get("next") || "/bookings");
+         router.refresh();
+     } catch (caught) {
         if (caught instanceof ApiError) {
           setError(caught.message || "Authentication failed.");
         } else {
@@ -42,8 +41,8 @@ export function LoginForm() {
             "Could not connect to the server. Please try again later.",
           );
         }
-      }
-    } finally {
+       }
+     finally {
       setLoading(false);
     }
   }
@@ -156,21 +155,6 @@ export function LoginForm() {
                 ? "Continue to Pulse Tickets"
                 : "Register and continue"}
           </button>
-
-          <button
-            type="button"
-            disabled={!oauthLoginUrl || loading}
-            onClick={() => {
-              if (oauthLoginUrl) {
-                window.location.href = oauthLoginUrl;
-              }
-            }}
-            className="w-full rounded-full border border-line bg-white px-5 py-4 text-sm font-semibold text-ink transition hover:border-cobalt disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            Continue with OAuth
-          </button>
-
-
 
           {success && (
             <p className="rounded-2xl border border-pine/20 bg-pineSoft px-4 py-3 text-sm font-medium text-pine">
