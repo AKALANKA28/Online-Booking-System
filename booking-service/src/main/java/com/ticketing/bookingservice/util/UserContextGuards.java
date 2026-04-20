@@ -9,11 +9,13 @@ public final class UserContextGuards {
     private UserContextGuards() {
     }
 
-    public static UserContext requireAuthenticated(String userId, String userEmail, String role) {
-        if (userId == null || userId.isBlank() || userEmail == null || userEmail.isBlank()) {
+    public static UserContext requireAuthenticated(String userId, String userEmail, String userPhone, String role) {
+        if (userId == null || userId.isBlank()
+                || userEmail == null || userEmail.isBlank()
+                || userPhone == null || userPhone.isBlank()) {
             throw new UnauthorizedException("Missing authenticated user context from gateway");
         }
-        return new UserContext(userId, userEmail, role);
+        return new UserContext(userId, userEmail, userPhone, role);
     }
 
     public static void requireOwnerOrAdmin(UserContext context, String ownerUserId) {

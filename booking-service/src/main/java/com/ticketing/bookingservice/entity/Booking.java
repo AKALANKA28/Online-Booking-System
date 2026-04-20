@@ -36,6 +36,10 @@ public class Booking {
     @Column(nullable = false, length = 160)
     private String userEmail;
 
+    /** E.164 for SMS (Twilio); optional. */
+    @Column(length = 32)
+    private String userPhone;
+
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
 

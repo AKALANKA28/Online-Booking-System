@@ -29,6 +29,7 @@ public class BookingResultPublisher {
                 booking.getEventId(),
                 booking.getUserId(),
                 booking.getUserEmail(),
+                booking.getUserPhone(),
                 booking.getTotalAmount(),
                 status,
                 booking.getItems().stream().map(item -> item.getSeatNumber()).toList()

@@ -8,6 +8,7 @@ public record BookingResultMessage(
         Long eventId,
         String userId,
         String userEmail,
+        String userPhone,
         BigDecimal totalAmount,
         String status,
         List<String> seatNumbers
