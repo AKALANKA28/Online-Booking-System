@@ -23,6 +23,10 @@ spring:
           uri: ${PAYMENT_SERVICE_URL:http://localhost:8084}
           predicates:
             - Path=/api/payments/**,/api/notifications/**
+        - id: payment-webhooks
+          uri: ${PAYMENT_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/webhooks/**
 
 app:
   security:
