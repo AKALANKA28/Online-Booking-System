@@ -6,6 +6,7 @@ COPY event-service/pom.xml event-service/pom.xml
 COPY seat-service/pom.xml seat-service/pom.xml
 COPY booking-service/pom.xml booking-service/pom.xml
 COPY payment-notification-service/pom.xml payment-notification-service/pom.xml
+COPY user-service/pom.xml user-service/pom.xml
 RUN mvn -q -pl event-service -am dependency:go-offline
 COPY . .
 RUN mvn -q -pl event-service -am clean package -DskipTests

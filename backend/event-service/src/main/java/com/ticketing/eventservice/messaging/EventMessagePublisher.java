@@ -28,4 +28,13 @@ public class EventMessagePublisher {
         );
         rabbitTemplate.convertAndSend(exchange, "event.created", payload);
     }
+
+    public void publishEventCancelled(Event event) {
+        EventCancelledMessage payload = new EventCancelledMessage(
+                event.getId(),
+                event.getTitle(),
+                "Event cancelled by admin"
+        );
+        rabbitTemplate.convertAndSend(exchange, "event.cancelled", payload);
+    }
 }

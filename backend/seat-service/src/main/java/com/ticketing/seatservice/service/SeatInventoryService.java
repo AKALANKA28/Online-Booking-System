@@ -74,6 +74,9 @@ public class SeatInventoryService {
 
         OffsetDateTime now = OffsetDateTime.now();
         for (Seat seat : seats) {
+            if (seat.getStatus() == SeatStatus.CANCELLED) {
+                throw new ConflictException("Seat is not available because the event is cancelled: " + seat.getSeatNumber());
+            }
             if (seat.getStatus() == SeatStatus.BOOKED) {
                 throw new ConflictException("Seat already booked: " + seat.getSeatNumber());
             }
@@ -125,6 +128,21 @@ public class SeatInventoryService {
             seat.setStatus(SeatStatus.AVAILABLE);
             seat.setLockedByBookingReference(null);
             seat.setLockedUntil(null);
+        }
+        if (!seats.isEmpty()) {
+            seatRepository.saveAll(seats);
+        }
+    }
+
+    @Transactional
+    public void releaseSeatsForEvent(Long eventId) {
+        List<Seat> seats = seatRepository.findByEventId(eventId);
+        for (Seat seat : seats) {
+            if (seat.getStatus() == SeatStatus.BOOKED || seat.getStatus() == SeatStatus.RESERVED) {
+                seat.setStatus(SeatStatus.AVAILABLE);
+                seat.setLockedByBookingReference(null);
+                seat.setLockedUntil(null);
+            }
         }
         if (!seats.isEmpty()) {
             seatRepository.saveAll(seats);

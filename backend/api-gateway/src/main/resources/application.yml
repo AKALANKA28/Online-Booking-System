@@ -1,6 +1,8 @@
 server:
   port: ${SERVER_PORT:8080}
 
+debug: ${APP_DEBUG:true}
+
 spring:
   application:
     name: api-gateway
@@ -19,6 +21,10 @@ spring:
           uri: ${BOOKING_SERVICE_URL:http://localhost:8083}
           predicates:
             - Path=/api/bookings/**
+        - id: user-service
+          uri: ${USER_SERVICE_URL:http://localhost:8085}
+          predicates:
+            - Path=/api/users/**
         - id: payment-service
           uri: ${PAYMENT_SERVICE_URL:http://localhost:8084}
           predicates:
@@ -28,6 +34,11 @@ app:
   security:
     jwt-secret: ${JWT_SECRET:demo-demo-demo-demo-demo-demo-demo-12345}
     token-validity-hours: 8
+    internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
+
+services:
+  user:
+    base-url: ${USER_SERVICE_URL:http://localhost:8085}
 
 management:
   endpoints:

@@ -5,17 +5,33 @@ export const dynamic = "force-dynamic";
 const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8080";
 
 async function forward(request: NextRequest) {
-  const base = API_BASE_URL.endsWith("/") ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+  const base = API_BASE_URL.endsWith("/")
+    ? API_BASE_URL.slice(0, -1)
+    : API_BASE_URL;
   const proxiedPath = request.nextUrl.pathname.replace(/^\/api\/proxy/, "");
   const targetUrl = `${base}${proxiedPath}${request.nextUrl.search}`;
 
-  const headers = new Headers(request.headers);
-  headers.delete("host");
-  headers.delete("content-length");
+  const headers = new Headers();
+  // Only forward essential headers to avoid 431 error
+  const essentialHeaders = [
+    "content-type",
+    "authorization",
+    "accept",
+    "accept-language",
+    "user-agent",
+  ];
 
-  const body = request.method === "GET" || request.method === "HEAD"
-    ? undefined
-    : await request.arrayBuffer();
+  for (const header of essentialHeaders) {
+    const value = request.headers.get(header);
+    if (value) {
+      headers.set(header, value);
+    }
+  }
+
+  const body =
+    request.method === "GET" || request.method === "HEAD"
+      ? undefined
+      : await request.arrayBuffer();
 
   try {
     const response = await fetch(targetUrl, {
@@ -36,7 +52,10 @@ async function forward(request: NextRequest) {
     });
   } catch {
     return NextResponse.json(
-      { message: "Could not reach the Spring gateway. Check API_BASE_URL and your backend services." },
+      {
+        message:
+          "Could not reach the Spring gateway. Check API_BASE_URL and your backend services.",
+      },
       { status: 502 },
     );
   }

@@ -19,13 +19,23 @@ const space = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "Pulse Tickets",
-  description: "Modern ticketing frontend for the Smart Event Ticketing and Reservation Platform.",
+  description:
+    "Modern ticketing frontend for the Smart Event Ticketing and Reservation Platform.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="en" className={`${manrope.variable} ${space.variable}`} suppressHydrationWarning>
-      <body className="min-h-screen">
+    <html
+      lang="en"
+      className={`${manrope.variable} ${space.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
+      <body className="min-h-screen" suppressHydrationWarning>
         <AuthProvider>
           <SiteHeader />
           <main>{children}</main>

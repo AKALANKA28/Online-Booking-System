@@ -25,6 +25,13 @@ public class BookingApplicationService {
     private final PaymentServiceClient paymentServiceClient;
     private final BookingResultPublisher bookingResultPublisher;
 
+    // ... existing methods ...
+
+    @Transactional(readOnly = true)
+    public long getSoldSeatCount(Long eventId) {
+        return bookingRepository.countSoldSeatsByEventIdAndStatus(eventId, BookingStatus.CONFIRMED);
+    }
+
     @Transactional
     public Booking createBooking(CreateBookingRequest request, UserContext context) {
         String bookingReference = UUID.randomUUID().toString();
