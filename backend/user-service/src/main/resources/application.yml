@@ -1,0 +1,42 @@
+server:
+  port: ${SERVER_PORT:8085}
+
+spring:
+  application:
+    name: user-service
+  datasource:
+    url: ${USER_DB_URL:jdbc:postgresql://ep-morning-meadow-a8vv6di9-pooler.eastus2.azure.neon.tech/userdb?sslmode=require&channelBinding=require}
+    username: ${USER_DB_USERNAME:neondb_owner}
+    password: ${USER_DB_PASSWORD:npg_cd8jbG0HYQnq}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+app:
+  security:
+    internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
+  bootstrap:
+    admin:
+      username: ${ADMIN_USERNAME:admin}
+      email: ${ADMIN_EMAIL:admin@ticketing.local}
+      password: ${ADMIN_PASSWORD:admin123}
+
+logging:
+  level:
+    org.springframework.jdbc.core: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

@@ -1,0 +1,147 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  event-service:
+    build:
+      context: .
+      dockerfile: event-service/Dockerfile
+    container_name: event-service
+    depends_on:
+      - rabbitmq
+    environment:
+      SERVER_PORT: 8081
+      EVENT_DB_URL: ${EVENT_DB_URL}
+      EVENT_DB_USERNAME: ${EVENT_DB_USERNAME}
+      EVENT_DB_PASSWORD: ${EVENT_DB_PASSWORD}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-guest}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-guest}
+      JWT_SECRET: ${JWT_SECRET:-demo-demo-demo-demo-demo-demo-demo-12345}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-internal-demo-secret}
+    ports:
+      - "8081:8081"
+
+  seat-service:
+    build:
+      context: .
+      dockerfile: seat-service/Dockerfile
+    container_name: seat-service
+    depends_on:
+      - rabbitmq
+    environment:
+      SERVER_PORT: 8082
+      SEAT_DB_URL: ${SEAT_DB_URL}
+      SEAT_DB_USERNAME: ${SEAT_DB_USERNAME}
+      SEAT_DB_PASSWORD: ${SEAT_DB_PASSWORD}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-guest}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-guest}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-internal-demo-secret}
+    ports:
+      - "8082:8082"
+
+  booking-service:
+    build:
+      context: .
+      dockerfile: booking-service/Dockerfile
+    container_name: booking-service
+    depends_on:
+      - rabbitmq
+      - seat-service
+      - payment-notification-service
+    environment:
+      SERVER_PORT: 8083
+      BOOKING_DB_URL: ${BOOKING_DB_URL}
+      BOOKING_DB_USERNAME: ${BOOKING_DB_USERNAME}
+      BOOKING_DB_PASSWORD: ${BOOKING_DB_PASSWORD}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-guest}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-guest}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-internal-demo-secret}
+      SERVICES_SEAT_BASE_URL: http://seat-service:8082
+      SERVICES_PAYMENT_BASE_URL: http://payment-notification-service:8084
+    ports:
+      - "8083:8083"
+
+  payment-notification-service:
+    build:
+      context: .
+      dockerfile: payment-notification-service/Dockerfile
+    container_name: payment-notification-service
+    depends_on:
+      - rabbitmq
+    environment:
+      SERVER_PORT: 8084
+      PAYMENT_DB_URL: ${PAYMENT_DB_URL}
+      PAYMENT_DB_USERNAME: ${PAYMENT_DB_USERNAME}
+      PAYMENT_DB_PASSWORD: ${PAYMENT_DB_PASSWORD}
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: ${RABBITMQ_DEFAULT_USER:-guest}
+      SPRING_RABBITMQ_PASSWORD: ${RABBITMQ_DEFAULT_PASS:-guest}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-internal-demo-secret}
+      # Optional — see docs/INTEGRATIONS.md (omit for built-in simulator + log-only notifications)
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      STRIPE_CURRENCY: ${STRIPE_CURRENCY:-usd}
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY:-}
+      SENDGRID_FROM_EMAIL: ${SENDGRID_FROM_EMAIL:-}
+      SENDGRID_FROM_NAME: ${SENDGRID_FROM_NAME:-Ticketing}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER:-}
+    ports:
+      - "8084:8084"
+
+  user-service:
+    build:
+      context: .
+      dockerfile: user-service/Dockerfile
+    container_name: user-service
+    environment:
+      SERVER_PORT: 8085
+      USER_DB_URL: ${USER_DB_URL}
+      USER_DB_USERNAME: ${USER_DB_USERNAME}
+      USER_DB_PASSWORD: ${USER_DB_PASSWORD}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-internal-demo-secret}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@ticketing.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+    ports:
+      - "8085:8085"
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    container_name: api-gateway
+    depends_on:
+      - event-service
+      - seat-service
+      - booking-service
+      - payment-notification-service
+      - user-service
+    environment:
+      SERVER_PORT: 8080
+      JWT_SECRET: ${JWT_SECRET:-demo-demo-demo-demo-demo-demo-demo-12345}
+      EVENT_SERVICE_URL: http://event-service:8081
+      SEAT_SERVICE_URL: http://seat-service:8082
+      BOOKING_SERVICE_URL: http://booking-service:8083
+      PAYMENT_SERVICE_URL: http://payment-notification-service:8084
+      USER_SERVICE_URL: http://user-service:8085
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-internal-demo-secret}
+    ports:
+      - "8080:8080"
+
+volumes: {}

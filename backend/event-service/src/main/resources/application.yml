@@ -1,0 +1,45 @@
+server:
+  port: ${SERVER_PORT:8081}
+
+debug: ${APP_DEBUG:true}
+
+spring:
+  application:
+    name: event-service
+  datasource:
+    url: ${EVENT_DB_URL:jdbc:postgresql://ep-morning-meadow-a8vv6di9-pooler.eastus2.azure.neon.tech/eventdb?sslmode=require&channelBinding=require}
+    username: ${EVENT_DB_USERNAME:neondb_owner}
+    password: ${EVENT_DB_PASSWORD:npg_cd8jbG0HYQnq}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  rabbitmq:
+    addresses: ${SPRING_RABBITMQ_ADDRESSES:amqps://jpwpeqpo:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju@yak.lmq.cloudamqp.com/jpwpeqpo}
+    username: ${SPRING_RABBITMQ_USERNAME:jpwpeqpo}
+    password: ${SPRING_RABBITMQ_PASSWORD:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju}
+    virtual-host: ${SPRING_RABBITMQ_VHOST:jpwpeqpo}
+    ssl:
+      enabled: ${SPRING_RABBITMQ_SSL_ENABLED:false}
+
+app:
+  rabbitmq:
+    exchange: ticketing.events
+  security:
+    internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
+services:
+  booking:
+    base-url: ${SERVICES_BOOKING_BASE_URL:http://localhost:8083}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html

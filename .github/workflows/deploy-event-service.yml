@@ -1,0 +1,46 @@
+name: Deploy Event Service
+
+run-name: "${{ github.actor }} deploying Event Service from ${{ github.ref_name }}"
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'backend/event-service/**'
+      - 'backend/pom.xml'
+      - '.github/workflows/deploy-event-service.yml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Show deployment context
+        run: |
+          echo "Starting deployment for Event Service"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Triggered by: ${{ github.event_name }}"
+
+      - name: Log in to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Build and deploy Event Service
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          appSourcePath: ${{ github.workspace }}/backend
+          dockerfilePath: event-service/Dockerfile
+          acrName: ${{ secrets.ACR_NAME }}
+          containerAppName: event-service
+          resourceGroup: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          containerAppEnvironment: ${{ secrets.AZURE_CONTAINERAPPS_ENV }}
+          imageToBuild: ${{ secrets.ACR_NAME }}.azurecr.io/event-service:${{ github.sha }}
+          disableTelemetry: true
+
+      - name: Deployment complete
+        run: echo "Event Service deployed successfully."

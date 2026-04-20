@@ -1,0 +1,44 @@
+server:
+  port: ${SERVER_PORT:8084}
+
+debug: ${APP_DEBUG:true}
+
+spring:
+  application:
+    name: payment-notification-service
+  datasource:
+    url: ${PAYMENT_DB_URL:jdbc:postgresql://ep-morning-meadow-a8vv6di9-pooler.eastus2.azure.neon.tech/paymentdb?&sslmode=require&channelBinding=require}
+    username: ${PAYMENT_DB_USERNAME:neondb_owner}
+    password: ${PAYMENT_DB_PASSWORD:npg_cd8jbG0HYQnq}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  rabbitmq:
+    addresses: ${SPRING_RABBITMQ_ADDRESSES:amqps://jpwpeqpo:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju@yak.lmq.cloudamqp.com/jpwpeqpo}
+    username: ${SPRING_RABBITMQ_USERNAME:jpwpeqpo}
+    password: ${SPRING_RABBITMQ_PASSWORD:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju}
+    virtual-host: ${SPRING_RABBITMQ_VHOST:jpwpeqpo}
+    ssl:
+      enabled: ${SPRING_RABBITMQ_SSL_ENABLED:false}
+
+app:
+  rabbitmq:
+    exchange: ticketing.events
+    confirmed-queue: payment.booking.confirmed.queue
+    failed-queue: payment.booking.failed.queue
+  security:
+    internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
