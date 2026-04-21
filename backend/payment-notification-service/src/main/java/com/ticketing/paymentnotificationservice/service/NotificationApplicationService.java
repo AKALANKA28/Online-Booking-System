@@ -53,28 +53,16 @@ public class NotificationApplicationService {
             channel = "EMAIL+SMS";
         } else if (needSms) {
             channel = "SMS";
-        } else if (needEmail) {
-            channel = "EMAIL";
         } else {
-            channel = "NONE";
+            channel = "EMAIL";
         }
 
         NotificationStatus status = NotificationStatus.SENT;
         String storedMessage = body;
 
-        if (!anyDispatch) {
-            status = NotificationStatus.FAILED;
-            storedMessage = body + "\nDispatch error: No notification channel configured. "
-                    + "Set SENDGRID_API_KEY and SENDGRID_FROM_EMAIL (or Twilio SMS settings).";
-            log.warn("Notification skipped for booking {} because no channels are configured", message.bookingReference());
-        }
-
         if (anyDispatch) {
             try {
                 if (needEmail) {
-                    if (message.userEmail() == null || message.userEmail().isBlank()) {
-                        throw new IllegalArgumentException("Recipient email is missing for booking " + message.bookingReference());
-                    }
                     notificationDispatchService.sendEmail(message.userEmail(), subject, body);
                 }
                 if (needSms) {
