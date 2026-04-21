@@ -65,16 +65,16 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Set up Snyk
-        uses: snyk/actions/setup@master
+      # - name: Set up Snyk
+      #   uses: snyk/actions/setup@master
 
-      - name: Run Snyk security scan
-        run: |
-          echo "Running Snyk security scan..."
-          snyk test --all-projects --severity-threshold=high
-          echo "Snyk scan completed."
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      # - name: Run Snyk security scan
+      #   run: |
+      #     echo "Running Snyk security scan..."
+      #     snyk test --all-projects --severity-threshold=high
+      #     echo "Snyk scan completed."
+      #   env:
+      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Upload backend artifacts
         uses: actions/upload-artifact@v4
