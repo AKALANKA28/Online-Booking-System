@@ -4,6 +4,8 @@ server:
 debug: ${APP_DEBUG:true}
 
 spring:
+  config:
+    import: optional:file:.env[.properties],optional:file:../.env[.properties]
   application:
     name: payment-notification-service
   datasource:
@@ -23,15 +25,29 @@ spring:
     password: ${SPRING_RABBITMQ_PASSWORD:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju}
     virtual-host: ${SPRING_RABBITMQ_VHOST:jpwpeqpo}
     ssl:
-      enabled: ${SPRING_RABBITMQ_SSL_ENABLED:false}
+      enabled: ${SPRING_RABBITMQ_SSL_ENABLED:true}
 
 app:
   rabbitmq:
     exchange: ticketing.events
     confirmed-queue: payment.booking.confirmed.queue
     failed-queue: payment.booking.failed.queue
+    cancelled-queue: payment.booking.cancelled.queue
   security:
     internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
+  integrations:
+    stripe:
+      secret-key: ${STRIPE_SECRET_KEY:}
+      webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+      currency: ${STRIPE_CURRENCY:usd}
+    sendgrid:
+      api-key: ${SENDGRID_API_KEY:}
+      from-email: ${SENDGRID_FROM_EMAIL:}
+      from-name: ${SENDGRID_FROM_NAME:Ticketing}
+    twilio:
+      account-sid: ${TWILIO_ACCOUNT_SID:}
+      auth-token: ${TWILIO_AUTH_TOKEN:}
+      from-number: ${TWILIO_FROM_NUMBER:}
 
 management:
   endpoints:

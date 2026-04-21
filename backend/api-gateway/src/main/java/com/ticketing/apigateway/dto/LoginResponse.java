@@ -8,6 +8,7 @@ public record LoginResponse(
         OffsetDateTime expiresAt,
         String userId,
         String email,
+        String phone,
         String role
 ) {
 }

@@ -64,23 +64,23 @@ jobs:
       - name: Run SonarCloud analysis
         run: |
           echo "Running SonarCloud analysis..."
-          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          mvn -B verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
             -Dsonar.host.url=https://sonarcloud.io
           echo "SonarCloud analysis completed."
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      # - name: Set up Snyk
-      #   uses: snyk/actions/setup@master
+      - name: Set up Snyk
+        uses: snyk/actions/setup@master
 
-      # - name: Run Snyk security scan
-      #   run: |
-      #     echo "Running Snyk security scan..."
-      #     snyk test --all-projects --severity-threshold=high
-      #     echo "Snyk scan completed."
-      #   env:
-      #     SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - name: Run Snyk security scan
+        run: |
+          echo "Running Snyk security scan..."
+          snyk test --all-projects --severity-threshold=high
+          echo "Snyk scan completed."
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Upload backend artifacts
         uses: actions/upload-artifact@v4

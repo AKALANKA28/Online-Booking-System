@@ -23,12 +23,17 @@ public class BookingResultPublisher {
         rabbitTemplate.convertAndSend(exchange, "booking.failed", toMessage(booking, "FAILED"));
     }
 
+    public void publishCancelled(Booking booking) {
+        rabbitTemplate.convertAndSend(exchange, "booking.cancelled", toMessage(booking, "CANCELLED"));
+    }
+
     private BookingResultMessage toMessage(Booking booking, String status) {
         return new BookingResultMessage(
                 booking.getBookingReference(),
                 booking.getEventId(),
                 booking.getUserId(),
                 booking.getUserEmail(),
+                booking.getUserPhone(),
                 booking.getTotalAmount(),
                 status,
                 booking.getItems().stream().map(item -> item.getSeatNumber()).toList()
