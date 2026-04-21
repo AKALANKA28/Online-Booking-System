@@ -35,6 +35,7 @@ public class UserApplicationService {
                 .username(request.username())
                 .passwordHash(passwordEncoder.encode(request.password()))
                 .email(request.email())
+                .phone(blankToNull(request.phone()))
                 .role(UserRole.CUSTOMER)
                 .build();
 
@@ -59,6 +60,10 @@ public class UserApplicationService {
 
         if (request.password() != null && !request.password().isBlank()) {
             user.setPasswordHash(passwordEncoder.encode(request.password()));
+        }
+
+        if (request.phone() != null) {
+            user.setPhone(blankToNull(request.phone()));
         }
 
         return UserResponse.from(userRepository.save(user));
@@ -112,5 +117,12 @@ public class UserApplicationService {
     private User findUserById(String userId) {
         return userRepository.findByUserId(userId)
                 .orElseThrow(() -> new Notfoundexception("User not found: " + userId));
+    }
+
+    private static String blankToNull(String value) {
+        if (value == null || value.isBlank()) {
+            return null;
+        }
+        return value.trim();
     }
 }

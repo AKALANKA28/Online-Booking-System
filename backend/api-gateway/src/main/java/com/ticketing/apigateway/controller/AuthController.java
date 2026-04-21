@@ -37,7 +37,8 @@ public class AuthController {
                             validation.userId(),
                             validation.username(),
                             validation.email(),
-                            validation.role()
+                            validation.role(),
+                            validation.phone()
                     );
                     LoginResponse response = new LoginResponse(
                             token,
@@ -45,6 +46,7 @@ public class AuthController {
                             jwtService.getExpiry(token),
                             validation.userId(),
                             validation.email(),
+                            validation.phone(),
                             validation.role()
                     );
                     return ResponseEntity.ok(response);
