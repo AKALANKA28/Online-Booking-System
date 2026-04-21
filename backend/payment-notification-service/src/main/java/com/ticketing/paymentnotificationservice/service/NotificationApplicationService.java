@@ -31,6 +31,11 @@ public class NotificationApplicationService {
             body = "Your booking is confirmed for event " + message.eventId()
                     + ". Seats: " + String.join(", ", message.seatNumbers())
                     + ". Total paid: " + message.totalAmount();
+        } else if ("CANCELLED".equalsIgnoreCase(message.status())) {
+            subject = "Event Cancelled - " + message.bookingReference();
+            body = "Your event was cancelled by the organizer for event " + message.eventId()
+                    + ". Affected seats: " + String.join(", ", message.seatNumbers())
+                    + ". Please contact support for refund and next steps.";
         } else {
             subject = "Booking Failed - " + message.bookingReference();
             body = "Your booking could not be completed for event " + message.eventId()

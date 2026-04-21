@@ -23,6 +23,10 @@ public class BookingResultPublisher {
         rabbitTemplate.convertAndSend(exchange, "booking.failed", toMessage(booking, "FAILED"));
     }
 
+    public void publishCancelled(Booking booking) {
+        rabbitTemplate.convertAndSend(exchange, "booking.cancelled", toMessage(booking, "CANCELLED"));
+    }
+
     private BookingResultMessage toMessage(Booking booking, String status) {
         return new BookingResultMessage(
                 booking.getBookingReference(),

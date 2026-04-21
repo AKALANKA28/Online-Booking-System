@@ -31,6 +31,7 @@ app:
     exchange: ticketing.events
     confirmed-queue: payment.booking.confirmed.queue
     failed-queue: payment.booking.failed.queue
+    cancelled-queue: payment.booking.cancelled.queue
   security:
     internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
   integrations:

@@ -28,6 +28,11 @@ public class RabbitConfig {
     }
 
     @Bean
+    public Queue bookingCancelledQueue(@Value("${app.rabbitmq.cancelled-queue}") String queueName) {
+        return new Queue(queueName, true);
+    }
+
+    @Bean
     public Binding bookingConfirmedBinding(Queue bookingConfirmedQueue, TopicExchange ticketingExchange) {
         return BindingBuilder.bind(bookingConfirmedQueue).to(ticketingExchange).with("booking.confirmed");
     }
@@ -35,6 +40,11 @@ public class RabbitConfig {
     @Bean
     public Binding bookingFailedBinding(Queue bookingFailedQueue, TopicExchange ticketingExchange) {
         return BindingBuilder.bind(bookingFailedQueue).to(ticketingExchange).with("booking.failed");
+    }
+
+    @Bean
+    public Binding bookingCancelledBinding(Queue bookingCancelledQueue, TopicExchange ticketingExchange) {
+        return BindingBuilder.bind(bookingCancelledQueue).to(ticketingExchange).with("booking.cancelled");
     }
 
     @Bean
