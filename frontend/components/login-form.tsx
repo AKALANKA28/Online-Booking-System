@@ -34,14 +34,13 @@ export function LoginForm() {
       signIn(response);
       router.push(searchParams.get("next") || "/bookings");
       router.refresh();
-      } catch (caught) {
-        if (caught instanceof ApiError) {
-          setError(caught.message || "Authentication failed.");
-        } else {
-          setError(
-            "Could not connect to the server. Please try again later.",
-          );
-        }
+    } catch (caught) {
+      if (caught instanceof ApiError) {
+        setError(caught.message || "Authentication failed.");
+      } else {
+        setError(
+          "Could not connect to the server. Please try again later.",
+        );
       }
     } finally {
       setLoading(false);
