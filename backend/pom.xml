@@ -32,10 +32,19 @@
         <springdoc.version>2.1.0</springdoc.version>
         <jjwt.version>0.12.6</jjwt.version>
         <lombok.version>1.18.34</lombok.version>
+        <jacoco.version>0.8.12</jacoco.version>
         <maven.compiler.release>21</maven.compiler.release>
         <sonar.organization>akalanka28</sonar.organization>
         <sonar.projectKey>smart-ticketing-platform</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${maven.multiModuleProjectDirectory}/api-gateway/target/site/jacoco/jacoco.xml,
+            ${maven.multiModuleProjectDirectory}/event-service/target/site/jacoco/jacoco.xml,
+            ${maven.multiModuleProjectDirectory}/seat-service/target/site/jacoco/jacoco.xml,
+            ${maven.multiModuleProjectDirectory}/booking-service/target/site/jacoco/jacoco.xml,
+            ${maven.multiModuleProjectDirectory}/payment-notification-service/target/site/jacoco/jacoco.xml,
+            ${maven.multiModuleProjectDirectory}/user-service/target/site/jacoco/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <dependencyManagement>
@@ -51,6 +60,28 @@
     </dependencyManagement>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <plugin>

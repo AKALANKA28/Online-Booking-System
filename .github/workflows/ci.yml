@@ -64,7 +64,7 @@ jobs:
       - name: Run SonarCloud analysis
         run: |
           echo "Running SonarCloud analysis..."
-          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          mvn -B verify -DskipTests org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }} \
             -Dsonar.host.url=https://sonarcloud.io
           echo "SonarCloud analysis completed."
