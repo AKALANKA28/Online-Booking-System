@@ -45,6 +45,7 @@ public class BookingApplicationService {
                 .eventId(request.eventId())
                 .userId(context.userId())
                 .userEmail(context.userEmail())
+                .userPhone(context.userPhone())
                 .totalAmount(reserveResponse.totalAmount())
                 .status(BookingStatus.PENDING_PAYMENT)
                 .build();

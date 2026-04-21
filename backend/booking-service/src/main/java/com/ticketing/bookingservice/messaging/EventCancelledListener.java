@@ -19,6 +19,7 @@ public class EventCancelledListener {
     
     private final BookingRepository bookingRepository;
     private final SeatServiceClient seatServiceClient;
+    private final BookingResultPublisher bookingResultPublisher;
     
     @RabbitListener(queues = "${app.rabbitmq.event-cancelled-queue}")
     public void onEventCancelled(EventCancelledMessage message) {
@@ -38,6 +39,7 @@ public class EventCancelledListener {
                 }
                 booking.setStatus(BookingStatus.CANCELLED);
                 bookingRepository.save(booking);
+                bookingResultPublisher.publishCancelled(booking);
             }
         }
     }

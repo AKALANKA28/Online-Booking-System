@@ -36,11 +36,15 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         String token = authHeader.substring(7);
         try {
             Claims claims = jwtService.parse(token);
-            ServerHttpRequest mutated = request.mutate()
+            var builder = request.mutate()
                     .header("X-User-Id", String.valueOf(claims.get("userId")))
                     .header("X-User-Email", String.valueOf(claims.get("email")))
-                    .header("X-User-Role", String.valueOf(claims.get("role")))
-                    .build();
+                    .header("X-User-Role", String.valueOf(claims.get("role")));
+            Object phoneClaim = claims.get("phone");
+            if (phoneClaim != null && !String.valueOf(phoneClaim).isBlank()) {
+                builder.header("X-User-Phone", String.valueOf(phoneClaim));
+            }
+            ServerHttpRequest mutated = builder.build();
             return chain.filter(exchange.mutate().request(mutated).build());
         } catch (JwtException ex) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
@@ -53,7 +57,8 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
         HttpMethod method = request.getMethod();
 
         if (path.startsWith("/auth/") || path.startsWith("/actuator/") || path.startsWith("/swagger-ui")
-                || path.startsWith("/v3/api-docs") || path.startsWith("/webjars")) {
+                || path.startsWith("/v3/api-docs") || path.startsWith("/webjars")
+                || path.startsWith("/webhooks/")) {
             return true;
         }
 

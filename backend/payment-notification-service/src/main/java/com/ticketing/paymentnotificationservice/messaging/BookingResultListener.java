@@ -24,4 +24,10 @@ public class BookingResultListener {
         log.info("Received booking.failed for bookingReference={}", message.bookingReference());
         notificationApplicationService.handleBookingResult(message);
     }
+
+    @RabbitListener(queues = "${app.rabbitmq.cancelled-queue}")
+    public void onBookingCancelled(BookingResultMessage message) {
+        log.info("Received booking.cancelled for bookingReference={}", message.bookingReference());
+        notificationApplicationService.handleBookingResult(message);
+    }
 }

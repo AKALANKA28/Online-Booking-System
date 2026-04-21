@@ -1,7 +1,7 @@
 server:
   port: ${SERVER_PORT:8080}
 
-debug: ${APP_DEBUG:true}
+debug: ${APP_DEBUG:false}
 
 spring:
   application:
@@ -29,6 +29,10 @@ spring:
           uri: ${PAYMENT_SERVICE_URL:http://localhost:8084}
           predicates:
             - Path=/api/payments/**,/api/notifications/**
+        - id: payment-webhooks
+          uri: ${PAYMENT_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/webhooks/**
 
 app:
   security:
