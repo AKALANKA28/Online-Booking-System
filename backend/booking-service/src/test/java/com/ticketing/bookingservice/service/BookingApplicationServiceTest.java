@@ -44,8 +44,10 @@ class BookingApplicationServiceTest {
         CreateBookingRequest request = new CreateBookingRequest(1L, List.of("A1"), "CARD", "pm_visa");
         UserContext context = new UserContext("user-1", "user@example.com", "+123456789", "CUSTOMER");
         ReserveSeatsResponse reserveResponse = new ReserveSeatsResponse(
-                List.of(new ReservedSeatItem("A1", "REGULAR", new BigDecimal("100.00"))),
-                new BigDecimal("100.00")
+                "ref-1",
+                1L,
+                new BigDecimal("100.00"),
+                List.of(new ReservedSeatItem("A1", "REGULAR", new BigDecimal("100.00")))
         );
         PaymentProcessResponse paymentResponse = new PaymentProcessResponse("PAY-123", "PROV-123", "OK", true, "approved");
 
@@ -66,8 +68,10 @@ class BookingApplicationServiceTest {
         CreateBookingRequest request = new CreateBookingRequest(1L, List.of("A2"), "CARD", "pm_visa");
         UserContext context = new UserContext("user-2", "user2@example.com", "+123456790", "CUSTOMER");
         ReserveSeatsResponse reserveResponse = new ReserveSeatsResponse(
-                List.of(new ReservedSeatItem("A2", "REGULAR", new BigDecimal("150.00"))),
-                new BigDecimal("150.00")
+                "ref-2",
+                1L,
+                new BigDecimal("150.00"),
+                List.of(new ReservedSeatItem("A2", "REGULAR", new BigDecimal("150.00")))
         );
 
         when(seatServiceClient.reserveSeats(any())).thenReturn(reserveResponse);
