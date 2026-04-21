@@ -32,6 +32,19 @@ app:
     failed-queue: payment.booking.failed.queue
   security:
     internal-api-key: ${INTERNAL_API_KEY:internal-demo-secret}
+  integrations:
+    stripe:
+      secret-key: ${STRIPE_SECRET_KEY:}
+      webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+      currency: ${STRIPE_CURRENCY:usd}
+    sendgrid:
+      api-key: ${SENDGRID_API_KEY:}
+      from-email: ${SENDGRID_FROM_EMAIL:}
+      from-name: ${SENDGRID_FROM_NAME:Ticketing}
+    twilio:
+      account-sid: ${TWILIO_ACCOUNT_SID:}
+      auth-token: ${TWILIO_AUTH_TOKEN:}
+      from-number: ${TWILIO_FROM_NUMBER:}
 
 management:
   endpoints:
