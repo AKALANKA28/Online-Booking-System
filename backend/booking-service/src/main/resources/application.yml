@@ -18,11 +18,10 @@ spring:
       hibernate:
         format_sql: true
   rabbitmq:
-    host: ${SPRING_RABBITMQ_HOST:rabbitmq}
-    port: ${SPRING_RABBITMQ_PORT:5672}
-    username: ${SPRING_RABBITMQ_USERNAME:guest}
-    password: ${SPRING_RABBITMQ_PASSWORD:guest}
-    virtual-host: ${SPRING_RABBITMQ_VHOST:/}
+    addresses: ${SPRING_RABBITMQ_ADDRESSES:amqps://jpwpeqpo:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju@yak.lmq.cloudamqp.com/jpwpeqpo}
+    username: ${SPRING_RABBITMQ_USERNAME:jpwpeqpo}
+    password: ${SPRING_RABBITMQ_PASSWORD:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju}
+    virtual-host: ${SPRING_RABBITMQ_VHOST:jpwpeqpo}
     ssl:
       enabled: ${SPRING_RABBITMQ_SSL_ENABLED:false}
 
