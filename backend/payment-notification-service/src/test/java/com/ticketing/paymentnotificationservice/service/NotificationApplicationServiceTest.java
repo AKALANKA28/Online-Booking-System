@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -75,7 +76,7 @@ class NotificationApplicationServiceTest {
     }
 
     @Test
-    void handleBookingResultFailsWhenNoChannelsConfigured() {
+    void handleBookingResultFailsWhenNoChannelsConfigured() throws Exception {
         NotificationApplicationService service = new NotificationApplicationService(
                 notificationLogRepository,
                 integrationProperties,
