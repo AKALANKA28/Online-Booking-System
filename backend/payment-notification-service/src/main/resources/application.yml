@@ -4,6 +4,8 @@ server:
 debug: ${APP_DEBUG:true}
 
 spring:
+  config:
+    import: optional:file:.env[.properties],optional:file:../.env[.properties]
   application:
     name: payment-notification-service
   datasource:
@@ -23,7 +25,7 @@ spring:
     password: ${SPRING_RABBITMQ_PASSWORD:Fde1Gvx2RIHSydGr2KMT0XuZVCA9M7ju}
     virtual-host: ${SPRING_RABBITMQ_VHOST:jpwpeqpo}
     ssl:
-      enabled: ${SPRING_RABBITMQ_SSL_ENABLED:false}
+      enabled: ${SPRING_RABBITMQ_SSL_ENABLED:true}
 
 app:
   rabbitmq:
