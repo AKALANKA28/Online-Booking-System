@@ -61,7 +61,7 @@ export function LoginForm() {
           Sign in with user-service credentials.
         </h2>
         <p className="mt-4 max-w-lg text-sm leading-7 text-white/80">
-          Sign in to access your bookings, manage your account, and get personalized event updates.
+          Sign in to access your bookings, manage your account, and get personalized event updates modified
         </p>
 
       </div>
