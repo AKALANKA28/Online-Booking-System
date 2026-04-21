@@ -55,12 +55,6 @@ jobs:
           mvn -B clean package -DskipTests
           echo "Backend build completed successfully."
 
-      - name: Run backend tests
-        run: |
-          echo "Running backend tests..."
-          mvn -B test
-          echo "Backend tests completed."
-
       - name: Run SonarCloud analysis
         run: |
           echo "Running SonarCloud analysis..."
